@@ -1,4 +1,4 @@
-package com.filesharing.quetta;
+package com.filesharing.filebin;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
