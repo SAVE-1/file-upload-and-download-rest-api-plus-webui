@@ -19,5 +19,10 @@ public class FileUploadController {
         return fileRepositoryJdbc.helloWorld();
     }
 
+    @GetMapping("/write-hello-world")
+    void writeHelloWorld() {
+        fileRepositoryJdbc.writeHelloWorldToDatabase();
+    }
+
 
 }
