@@ -1,2 +1,2 @@
-INSERT INTO [Filebin].[dbo].[test]
-VALUES ('!!! HELLO WORLD !!!');
+INSERT INTO [Filebin].[dbo].[test] (name, timestamp)
+VALUES ('!!! HELLO WORLD !!!', CURRENT_TIMESTAMP);

@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
+import java.time.LocalDateTime;
+
 @Repository
 public class FileJdbcDatabaseRepository implements FileDatabaseRepository {
 
@@ -19,8 +21,8 @@ public class FileJdbcDatabaseRepository implements FileDatabaseRepository {
     }
 
     public void writeHelloWorldToDatabase() {
-        var updated = jdbcClient.sql("INSERT INTO test(name) values(?)")
-                .params("HELLO WORLD from Method:writeHelloWorldToDatabase()")
+        var updated = jdbcClient.sql("INSERT INTO test(name, timestamp) values(?, ?)")
+                .params("HELLO WORLD from Method:writeHelloWorldToDatabase()", LocalDateTime.now())
                 .update();
 
         Assert.state(updated == 1, "Failed to create run jee");
