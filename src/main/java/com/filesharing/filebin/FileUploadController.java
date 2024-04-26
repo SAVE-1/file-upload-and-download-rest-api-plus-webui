@@ -1,0 +1,35 @@
+package com.filesharing.filebin;
+
+//import com.filesharing.filebin.file.FileRepositoryJdbc;
+import com.filesharing.filebin.file.database.FileJdbcDatabaseRepository;
+import com.filesharing.filebin.file.filestorage.StorageService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/files")
+public class FileUploadController {
+
+    private final StorageService storageService;
+    private final FileJdbcDatabaseRepository fileJdbcDatabaseRepository;
+
+    public FileUploadController(StorageService storageService, FileJdbcDatabaseRepository fileJdbcDatabaseRepository) {
+        this.storageService = storageService;
+        this.fileJdbcDatabaseRepository = fileJdbcDatabaseRepository;
+    }
+
+    @GetMapping("")
+    String helloWorld() {
+        return fileJdbcDatabaseRepository.helloWorld();
+    }
+
+    @GetMapping("/write-hello-world")
+    void writeHelloWorld() {
+        fileJdbcDatabaseRepository.writeHelloWorldToDatabase();
+    }
+
+
+
+
+}

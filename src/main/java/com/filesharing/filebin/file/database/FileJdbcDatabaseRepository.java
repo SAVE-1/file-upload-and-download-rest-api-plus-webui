@@ -1,17 +1,16 @@
-package com.filesharing.filebin.file;
+package com.filesharing.filebin.file.database;
+
 
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
-import java.util.List;
-
 @Repository
-public class FileRepositoryJdbc implements FileRepository {
+public class FileJdbcDatabaseRepository implements FileDatabaseRepository {
 
     private final JdbcClient jdbcClient;
 
-    public FileRepositoryJdbc(JdbcClient jdbcClient) {
+    public FileJdbcDatabaseRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
     }
 
@@ -23,8 +22,6 @@ public class FileRepositoryJdbc implements FileRepository {
         var updated = jdbcClient.sql("INSERT INTO test(name) values(?)")
                 .params("HELLO WORLD from Method:writeHelloWorldToDatabase()")
                 .update();
-
-        // String name = this.getClass().getEnclosingMethod().getName();
 
         Assert.state(updated == 1, "Failed to create run jee");
     }

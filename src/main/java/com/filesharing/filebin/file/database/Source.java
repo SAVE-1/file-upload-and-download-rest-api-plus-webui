@@ -1,4 +1,4 @@
-package com.filesharing.filebin.file.entities;
+package com.filesharing.filebin.file.database;
 
 public enum Source {
     WEBUPLOAD, MOBILEUPLOAD
