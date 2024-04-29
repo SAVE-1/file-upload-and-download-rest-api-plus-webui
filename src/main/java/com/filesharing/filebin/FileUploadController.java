@@ -24,7 +24,7 @@ public class FileUploadController {
         this.fileJdbcDatabaseRepository = fileJdbcDatabaseRepository;
     }
 
-    @GetMapping("")
+    @GetMapping("helloworld")
     String helloWorld() {
         return fileJdbcDatabaseRepository.helloWorld();
     }
