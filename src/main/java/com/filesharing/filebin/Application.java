@@ -1,7 +1,5 @@
 package com.filesharing.filebin;
 
-//import com.filesharing.filebin.file.FileRepository;
-//import com.filesharing.filebin.file.FileRepositoryJdbc;
 import com.filesharing.filebin.file.filestorage.StorageService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
