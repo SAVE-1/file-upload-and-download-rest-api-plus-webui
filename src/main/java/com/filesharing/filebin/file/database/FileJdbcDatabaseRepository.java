@@ -28,4 +28,15 @@ public class FileJdbcDatabaseRepository implements FileDatabaseRepository {
         Assert.state(updated == 1, "Failed to create run jee");
     }
 
+    public String echo(String str) {
+        var updated = jdbcClient.sql("INSERT INTO test(name, timestamp) values(?, ?)")
+                .params(str, LocalDateTime.now())
+                .update();
+
+        if(updated > 0) {
+            return str;
+        }
+
+        return "";
+    }
 }
