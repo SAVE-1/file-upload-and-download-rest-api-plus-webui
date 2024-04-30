@@ -1,9 +1,6 @@
 package com.filesharing.filebin;
 
 import com.filesharing.filebin.file.database.FileJdbcDatabaseRepository;
-import com.filesharing.filebin.file.filestorage.FileStorageImpl;
-import com.filesharing.filebin.file.filestorage.FileSystemStorageService;
-import com.filesharing.filebin.file.filestorage.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +20,11 @@ import javax.print.attribute.standard.Media;
 @Tag(name = "File upload and download", description = "File upload and download API")
 public class FileUploadController {
 
-    private final FileStorageImpl storageServiceImpl;
     private final FileJdbcDatabaseRepository fileJdbcDatabaseRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
-    public FileUploadController(FileStorageImpl storageService, FileJdbcDatabaseRepository fileJdbcDatabaseRepository) {
-        this.storageServiceImpl = storageService;
+    public FileUploadController(FileJdbcDatabaseRepository fileJdbcDatabaseRepository) {
         this.fileJdbcDatabaseRepository = fileJdbcDatabaseRepository;
     }
 
@@ -48,14 +43,15 @@ public class FileUploadController {
         return fileJdbcDatabaseRepository.echo(echo);
     }
 
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<FileUploadResponse> upload(
-            @Validated @RequestParam("file") MultipartFile file,
-            @RequestParam("name") String name
-    ) {
-        FileUploadRequest fileUploadRequest = new FileUploadRequest(file, name);
-        return ResponseEntity.ok(storageServiceImpl.upload(fileUploadRequest));
+    // for uploading the SINGLE file to the database
+    @PostMapping(
+            path = "/upload",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String uploadFile(@RequestParam("image") MultipartFile file) throws Exception {
+        return "PRÖÖT";
     }
+
+
 
 
 }
