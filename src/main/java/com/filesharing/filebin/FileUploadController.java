@@ -51,6 +51,13 @@ public class FileUploadController {
         return "PRÖÖT";
     }
 
+    @PostMapping(
+            path = "/test"
+    )
+    public String test() throws Exception {
+        return "PRÖÖT";
+    }
+
 
 
 
