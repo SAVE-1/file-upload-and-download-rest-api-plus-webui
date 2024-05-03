@@ -1,46 +1,43 @@
 package com.filesharing.filebin;
 
-import com.filesharing.filebin.file.database.FileJdbcDatabaseRepository;
+import com.filesharing.filebin.file.database.FileMetadataRepositoryImpl;
+import com.filesharing.filebin.file.filestorage.FileStorageServiceImpl;
+import com.filesharing.filebin.file.filestorage.FileonDisk;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import javax.print.attribute.standard.Media;
 
 @RestController
 @RequestMapping("/api/file")
 @Tag(name = "File upload and download", description = "File upload and download API")
 public class FileUploadController {
 
-    private final FileJdbcDatabaseRepository fileJdbcDatabaseRepository;
+    private final FileMetadataRepositoryImpl fileMetadataRepositoryImpl;
+    private final FileStorageServiceImpl fileStorageServiceImpl;
 
     private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
-    public FileUploadController(FileJdbcDatabaseRepository fileJdbcDatabaseRepository) {
-        this.fileJdbcDatabaseRepository = fileJdbcDatabaseRepository;
+    public FileUploadController(FileMetadataRepositoryImpl fileMetadataRepositoryImpl, FileStorageServiceImpl fileStorageServiceImpl) {
+        this.fileMetadataRepositoryImpl = fileMetadataRepositoryImpl;
+        this.fileStorageServiceImpl = fileStorageServiceImpl;
     }
 
     @GetMapping("helloworld")
     String helloWorld() {
-        return fileJdbcDatabaseRepository.helloWorld();
+        return fileMetadataRepositoryImpl.helloWorld();
     }
 
     @GetMapping("/write-hello-world")
     void writeHelloWorld() {
-        fileJdbcDatabaseRepository.writeHelloWorldToDatabase();
+        fileMetadataRepositoryImpl.writeHelloWorldToDatabase();
     }
 
     @GetMapping("/echo")
     String writeHelloWorld(@RequestParam("echo") String echo) {
-        return fileJdbcDatabaseRepository.echo(echo);
+        return fileMetadataRepositoryImpl.echo(echo);
     }
 
     // for uploading the SINGLE file to the database
@@ -48,6 +45,11 @@ public class FileUploadController {
             path = "/upload",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String uploadFile(@RequestParam("image") MultipartFile file) throws Exception {
+        FileonDisk fileonDisk = new FileonDisk(file, "adwadw");
+
+        fileStorageServiceImpl.uploadFileToDisk(fileonDisk);
+
+
         return "PRÖÖT";
     }
 

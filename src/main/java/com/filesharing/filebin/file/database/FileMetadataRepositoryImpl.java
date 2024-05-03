@@ -1,6 +1,5 @@
 package com.filesharing.filebin.file.database;
 
-
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
@@ -8,11 +7,11 @@ import org.springframework.util.Assert;
 import java.time.LocalDateTime;
 
 @Repository
-public class FileJdbcDatabaseRepository implements FileDatabaseRepository {
+public class FileMetadataRepositoryImpl implements FileMetadataRepository {
 
     private final JdbcClient jdbcClient;
 
-    public FileJdbcDatabaseRepository(JdbcClient jdbcClient) {
+    public FileMetadataRepositoryImpl(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
     }
 
@@ -40,3 +39,4 @@ public class FileJdbcDatabaseRepository implements FileDatabaseRepository {
         return "";
     }
 }
+

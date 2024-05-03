@@ -1,6 +1,6 @@
 package com.filesharing.filebin.file.database;
 
-public interface FileDatabaseRepository {
+public interface FileMetadataRepository {
     void writeHelloWorldToDatabase();
     String helloWorld();
 
