@@ -44,7 +44,7 @@ public class FileUploadController {
     @PostMapping(
             path = "/upload",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String uploadFile(@RequestParam("image") MultipartFile file) throws Exception {
+    public String uploadFile(@RequestParam("file") MultipartFile file) throws Exception {
         FileonDisk fileonDisk = new FileonDisk(file, "adwadw");
 
         fileStorageServiceImpl.uploadFileToDisk(fileonDisk);
@@ -53,14 +53,10 @@ public class FileUploadController {
         return "PRÖÖT";
     }
 
-    @PostMapping(
-            path = "/test"
-    )
+    @PostMapping(path = "/test")
     public String test() throws Exception {
         return "PRÖÖT";
     }
-
-
 
 
 }

@@ -1,10 +1,36 @@
-<script setup>
-defineProps({
-  msg: {
+<script>
+
+import axios from 'axios';
+
+export default {
+  el: '#app',
+  props: {
+    msg: {
     type: String,
     required: true
   }
-})
+  },
+  data () {
+    return {
+      info: null
+    }
+  },
+  mounted () {
+    axios
+      .get('http://localhost:8080/api/file/helloworld')
+      .then(response => {
+        this.info = response;
+        console.log(response);
+
+      })
+  }
+}
+
+
+
+
+
+
 </script>
 
 <template>
@@ -16,6 +42,15 @@ defineProps({
       <a href="https://vuejs.org/" target="_blank" rel="noopener">Vue 3</a>.
     </h3>
   </div>
+
+  <div id="app">
+    {{ info }}
+  </div>
+
+  <form action="http://localhost:8080/api/file/upload" method="post" enctype="multipart/form-data">
+    <input name="file" type="file" multiple>
+    <button type="submit">Upload</button>
+  </form>
 </template>
 
 <style scoped>
