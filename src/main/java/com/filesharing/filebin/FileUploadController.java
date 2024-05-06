@@ -48,14 +48,12 @@ public class FileUploadController {
         FileonDisk fileonDisk = new FileonDisk(file, "adwadw");
 
         fileStorageServiceImpl.uploadFileToDisk(fileonDisk);
-
-
-        return "PRÖÖT";
+        return "upload";
     }
 
     @PostMapping(path = "/test")
     public String test() throws Exception {
-        return "PRÖÖT";
+        return "TEST";
     }
 
 
