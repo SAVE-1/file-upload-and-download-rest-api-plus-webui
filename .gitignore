@@ -35,3 +35,4 @@ build/
 ### VS Code ###
 .vscode/
 /upload-dir/*
+/Libraries/lib/libclamav.dll
