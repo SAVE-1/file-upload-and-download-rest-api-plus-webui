@@ -4,10 +4,13 @@ import com.filesharing.filebin.FileUploadController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -64,4 +67,26 @@ public class FileStorageServiceImpl implements FileStorageService {
 
         return Optional.empty();
     }
+
+    public Resource getUploadedFile(String name) {
+        try {
+            Path file = load(name);
+            Resource resource = new UrlResource(file.toUri());
+            if (resource.exists() || resource.isReadable()) {
+                return resource;
+            }
+            else {
+                throw new StorageFileNotFoundException(
+                        "Could not read file: " + name);
+            }
+        }
+        catch (MalformedURLException e) {
+            throw new StorageFileNotFoundException("Could not read file: " + name, e);
+        }
+    }
+
+    public Path load(String filename) {
+        return storagePath.resolve(filename);
+    }
+
 }
