@@ -19,16 +19,11 @@ export default {
     axios
       .get('http://localhost:8080/api/file/helloworld')
       .then(response => {
-        this.info = response;
-        console.log(response);
-
+        this.info = response.data;
+        console.log(response.data);
       })
   }
 }
-
-
-
-
 
 
 </script>
@@ -49,7 +44,7 @@ export default {
 
   <form action="http://localhost:8080/api/file/upload" method="post" enctype="multipart/form-data">
     <input name="file" type="file" multiple>
-    <button type="submit">Upload</button>
+    <button class="button button2" type="submit">Upload</button>
   </form>
 </template>
 
@@ -76,4 +71,21 @@ h3 {
     text-align: left;
   }
 }
+
+.button, .input, input::file-selector-button {
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.button2, .input2, input::file-selector-button { background-color: #008CBA; }
+
+
+
 </style>
