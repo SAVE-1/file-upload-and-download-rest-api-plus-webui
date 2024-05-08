@@ -1,6 +1,6 @@
 package com.filesharing.filebin.file.filestorage;
 
-import com.filesharing.filebin.FileUploadController;
+import com.filesharing.filebin.controller.FileUploadController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
