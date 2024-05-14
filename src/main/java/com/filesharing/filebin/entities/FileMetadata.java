@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Table(name = "filedata")
 @Entity
-public class FileData {
+public class FileMetadata {
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
         @Column(nullable = false)
