@@ -38,8 +38,9 @@ public class SecurityConfiguration {
                          csrf.disable()
                 )
                 .authorizeHttpRequests((auth) -> {
-                    auth.requestMatchers("/auth/**")
-                            .permitAll()
+                    auth
+                            .requestMatchers("/auth/**").permitAll()
+                            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                             .anyRequest()
                             .authenticated();
                 })
@@ -54,7 +55,7 @@ public class SecurityConfiguration {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:8005"));
+        configuration.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:8080/swagger-ui.html"));
         configuration.setAllowedMethods(List.of("GET","POST"));
         configuration.setAllowedHeaders(List.of("Authorization","Content-Type"));
 
