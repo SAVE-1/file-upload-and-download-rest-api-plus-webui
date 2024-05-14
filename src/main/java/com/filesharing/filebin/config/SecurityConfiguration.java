@@ -39,10 +39,11 @@ public class SecurityConfiguration {
                 )
                 .authorizeHttpRequests((auth) -> {
                     auth
+                            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**","/swagger-ui.html").permitAll()
+                            // APIs
                             .requestMatchers("/auth/**").permitAll()
-                            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                            .anyRequest()
-                            .authenticated();
+                            .requestMatchers("/api/file/**").permitAll()
+                            .anyRequest().authenticated();
                 })
                 .sessionManagement((sess) -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
