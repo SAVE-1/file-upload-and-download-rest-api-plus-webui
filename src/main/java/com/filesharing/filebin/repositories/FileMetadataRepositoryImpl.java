@@ -1,10 +1,12 @@
-package com.filesharing.filebin.file.database;
+package com.filesharing.filebin.repositories;
 
+import com.filesharing.filebin.entities.FileMetadata;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Repository
 public class FileMetadataRepositoryImpl implements FileMetadataRepository {
@@ -32,11 +34,18 @@ public class FileMetadataRepositoryImpl implements FileMetadataRepository {
                 .params(str, LocalDateTime.now())
                 .update();
 
-        if(updated > 0) {
+        if (updated > 0) {
             return str;
         }
 
         return "";
     }
-}
 
+    public Optional<FileMetadata> insertNew(FileMetadata newFile) {
+        var updated = jdbcClient.sql("INSERT INTO filedata(file_name, file_size, upload_date) values(?, ?, ?)")
+                .params(newFile.getFileName(), newFile.getFileSize(), newFile.getUploadDate())
+                .update();
+
+        return Optional.ofNullable(newFile);
+    }
+}

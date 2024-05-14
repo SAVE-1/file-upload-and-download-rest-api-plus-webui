@@ -1,4 +1,4 @@
-package com.filesharing.filebin.file.database;
+package com.filesharing.filebin.repositories;
 
 public interface FileMetadataRepository {
     void writeHelloWorldToDatabase();
