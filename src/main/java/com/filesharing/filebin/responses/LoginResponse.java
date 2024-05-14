@@ -1,5 +1,7 @@
 package com.filesharing.filebin.responses;
 
+import java.text.MessageFormat;
+
 public class LoginResponse {
     private String token;
 
@@ -25,9 +27,9 @@ public class LoginResponse {
 
     @Override
     public String toString() {
-        return "LoginResponse{" +
-                "token='" + token + '\'' +
-                ", expiresIn=" + expiresIn +
-                '}';
+        return MessageFormat.
+                format("LoginResponse={token={0}, expiresIn='{1}'}",
+                        this.token,
+                        this.expiresIn);
     }
 }

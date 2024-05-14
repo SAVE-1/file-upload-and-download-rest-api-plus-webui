@@ -122,7 +122,6 @@ public class User implements UserDetails {
 
     @Override
     public String toString() {
-
         return MessageFormat.
                 format("User={id={0}, fullName='{1}', email={2}, password={3}, createdAt={4}, updatedAt={5}}",
                 this.id,
