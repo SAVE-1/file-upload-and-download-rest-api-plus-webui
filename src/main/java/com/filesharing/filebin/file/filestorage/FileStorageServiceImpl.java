@@ -89,4 +89,22 @@ public class FileStorageServiceImpl implements FileStorageService {
         return storagePath.resolve(filename);
     }
 
+    public Boolean doesFileExist(String fileName) {
+        try {
+            Path file = load(fileName);
+            Resource resource = new UrlResource(file.toUri());
+            if (resource.exists() || resource.isReadable()) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        catch (MalformedURLException e) {
+            throw new StorageFileNotFoundException("Could not read file: " + fileName, e);
+        }
+    }
+
+
+
 }

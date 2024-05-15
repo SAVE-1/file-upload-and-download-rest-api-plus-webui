@@ -2,7 +2,6 @@ package com.filesharing.filebin.file.filestorage;
 
 import org.springframework.core.io.Resource;
 
-import java.nio.file.Path;
 import java.util.Optional;
 
 public interface FileStorageService {
@@ -15,4 +14,5 @@ public interface FileStorageService {
 
     Optional<String> uploadFileToDisk(FileonDisk file);
 
+    Boolean doesFileExist(String fileName);
 }

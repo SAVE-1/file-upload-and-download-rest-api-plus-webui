@@ -1,12 +1,16 @@
 package com.filesharing.filebin.controller;
 
-import com.filesharing.filebin.file.database.FileMetadataRepositoryImpl;
+import com.filesharing.filebin.repositories.FileMetadataRepositoryImpl;
 import com.filesharing.filebin.file.filestorage.FileStorageServiceImpl;
 import com.filesharing.filebin.file.filestorage.FileonDisk;
+import com.filesharing.filebin.requests.RequestStates;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,12 +50,22 @@ public class FileUploadController {
     // for uploading the SINGLE file to the database
     @PostMapping(
             path = "/upload",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String uploadFile(@RequestParam("file") MultipartFile file) throws Exception {
-        FileonDisk fileonDisk = new FileonDisk(file, "adwadw");
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file, Boolean forceOverwrite) throws Exception {
+
+        Boolean doesExist = fileStorageServiceImpl.doesFileExist(file.getOriginalFilename());
+
+        if(doesExist && forceOverwrite == false) {
+            String str = jsonifyString(String.format("{'status':{'code':%s, 'message': 'file already exists'}}",
+                    RequestStates.FILE_ALREADY_EXISTS.ordinal()));
+            return new ResponseEntity<>(str, HttpStatus.CONFLICT);
+        }
+
+        FileonDisk fileonDisk = new FileonDisk(file, file.getName());
 
         fileStorageServiceImpl.uploadFileToDisk(fileonDisk);
-        return "upload";
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping(path = "/download/{filename:.+}",
@@ -70,6 +84,12 @@ public class FileUploadController {
     @GetMapping(path = "/test")
     public String test() throws Exception {
         return "TEST";
+    }
+
+    private String jsonifyString(String stringToParse) {
+        Gson g = new Gson();
+        JsonElement root = g.fromJson(stringToParse, JsonElement.class);
+        return g.toJson(root);
     }
 
 
