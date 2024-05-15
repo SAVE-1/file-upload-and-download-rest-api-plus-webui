@@ -1,11 +1,9 @@
 package com.filesharing.filebin.controller;
 
+import com.filesharing.filebin.constants.MyConstants;
 import com.filesharing.filebin.repositories.FileMetadataRepositoryImpl;
 import com.filesharing.filebin.file.filestorage.FileStorageServiceImpl;
 import com.filesharing.filebin.file.filestorage.FileonDisk;
-import com.filesharing.filebin.requests.RequestStates;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -57,9 +55,7 @@ public class FileUploadController {
         Boolean doesExist = fileStorageServiceImpl.doesFileExist(file.getOriginalFilename());
 
         if(doesExist && forceOverwrite == false) {
-            String str = jsonifyString(String.format("{'status':{'code':%s, 'message': 'file already exists'}}",
-                    RequestStates.FILE_ALREADY_EXISTS.ordinal()));
-            return new ResponseEntity<>(str, HttpStatus.CONFLICT);
+            return new ResponseEntity<>(MyConstants.FILE_ALREADY_EXISTS, HttpStatus.CONFLICT);
         }
 
         FileonDisk fileonDisk = new FileonDisk(file, file.getName());
@@ -86,11 +82,7 @@ public class FileUploadController {
         return "TEST";
     }
 
-    private String jsonifyString(String stringToParse) {
-        Gson g = new Gson();
-        JsonElement root = g.fromJson(stringToParse, JsonElement.class);
-        return g.toJson(root);
-    }
+
 
 
 }
