@@ -1,6 +1,7 @@
 package com.filesharing.filebin.controller;
 
 import com.filesharing.filebin.constants.MyConstants;
+import com.filesharing.filebin.entities.FileMetadata;
 import com.filesharing.filebin.repositories.FileMetadataRepositoryImpl;
 import com.filesharing.filebin.file.filestorage.FileStorageServiceImpl;
 import com.filesharing.filebin.file.filestorage.FileonDisk;
@@ -14,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/file")
@@ -82,7 +85,13 @@ public class FileUploadController {
         return "TEST";
     }
 
+    @GetMapping(path = "/myfiles")
+    public List<FileMetadata> getUserFileList() throws Exception {
+        String user = "example@example.com";
 
+        List<FileMetadata> f = fileMetadataRepositoryImpl.findByUploaderEmail(user);
 
+        return f;
+    }
 
 }

@@ -1,11 +1,13 @@
 package com.filesharing.filebin.repositories;
 
 import com.filesharing.filebin.entities.FileMetadata;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -41,11 +43,46 @@ public class FileMetadataRepositoryImpl implements FileMetadataRepository {
         return "";
     }
 
-    public Optional<FileMetadata> insertNew(FileMetadata newFile) {
-        var updated = jdbcClient.sql("INSERT INTO filedata(file_name, file_size, upload_date) values(?, ?, ?)")
-                .params(newFile.getFileName(), newFile.getFileSize(), newFile.getUploadDate())
-                .update();
+    public Optional<FileMetadata> upsert(FileMetadata newFile) {
+        throw new NotImplementedException();
+        /*
+            MERGE INTO students
+            USING (VALUES (@id, @name,@age)) AS source (ID, Name,Age)
+            ON students.ID = source.ID
+            WHEN MATCHED THEN
+            UPDATE SET Name = source.Name,
+                    age=source.age
+            WHEN NOT MATCHED THEN
+            INSERT (ID, Name,age)
+            VALUES (source.ID, source.Name,source.age);
+        */
 
-        return Optional.ofNullable(newFile);
+
+        /// ---- DO NOT DELETE ---- WIP
+//        String q = "MERGE INTO filedata" +
+//        "USING (VALUES (@file_name, @file_size, @upload_date)) AS source (ID, Name,Age)" +
+//        "ON students.ID = source.ID" +
+//        "WHEN MATCHED THEN" +
+//        "UPDATE SET " +
+//                "Name = source.Name," +
+//                "age=source.age" +
+//        "WHEN NOT MATCHED THEN" +
+//        "INSERT (ID, Name,age)" +
+//        "VALUES (source.ID, source.Name,source.age);";
+//
+//
+//        var updated = jdbcClient.sql("INSERT INTO filedata(file_name, file_size, upload_date) values(?, ?, ?)")
+//                .params(newFile.getFileName(), newFile.getFileSize(), newFile.getUploadDate())
+//                .update();
+//
+//        return Optional.ofNullable(newFile);
     }
+
+    public List<FileMetadata> findByUploaderEmail(String user) {
+        List<FileMetadata> results = jdbcClient.sql("SELECT file_name, file_size, uploader_email FROM filedata WHERE uploader_email = ?")
+                .params(user).query(FileMetadata.class).list();
+
+        return results;
+    }
+
 }
