@@ -6,7 +6,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -122,7 +121,7 @@ public class User implements UserDetails {
 
     @Override
     public String toString() {
-        return MessageFormat.
+        return String.
                 format("User={id={0}, fullName='{1}', email={2}, password={3}, createdAt={4}, updatedAt={5}}",
                 this.id,
                 this.fullName,
