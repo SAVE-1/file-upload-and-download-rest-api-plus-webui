@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -67,6 +68,12 @@ public class FileUploadController {
         FileonDisk fileonDisk = new FileonDisk(file, file.getName());
 
         fileStorageServiceImpl.uploadFileToDisk(fileonDisk);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User)authentication.getPrincipal();
+
+        fileMetadataRepositoryImpl.insertNewFile(file.getOriginalFilename(), user.getEmail(), (int)file.getSize(), LocalDateTime.now().toString());
+
         return ResponseEntity.ok().build();
     }
 

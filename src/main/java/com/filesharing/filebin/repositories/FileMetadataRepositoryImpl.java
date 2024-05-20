@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,5 +85,15 @@ public class FileMetadataRepositoryImpl implements FileMetadataRepository {
 
         return results;
     }
+
+    public int insertNewFile(String filename, String username, int filesize, String uploadDate) {
+        int updated = jdbcClient.sql("INSERT INTO filedata(file_name, file_size, upload_date, uploader_email) values(?, ?, ?, ?)")
+                .params(filename, filesize, uploadDate, username)
+                .update();
+
+        return updated;
+    }
+
+
 
 }
