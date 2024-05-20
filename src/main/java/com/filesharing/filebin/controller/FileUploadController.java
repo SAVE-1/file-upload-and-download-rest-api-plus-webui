@@ -2,6 +2,7 @@ package com.filesharing.filebin.controller;
 
 import com.filesharing.filebin.constants.MyConstants;
 import com.filesharing.filebin.entities.FileMetadata;
+import com.filesharing.filebin.entities.User;
 import com.filesharing.filebin.repositories.FileMetadataRepositoryImpl;
 import com.filesharing.filebin.file.filestorage.FileStorageServiceImpl;
 import com.filesharing.filebin.file.filestorage.FileonDisk;
@@ -12,6 +13,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -87,9 +90,10 @@ public class FileUploadController {
 
     @GetMapping(path = "/myfiles")
     public List<FileMetadata> getUserFileList() throws Exception {
-        String user = "example@example.com";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User)authentication.getPrincipal();
 
-        List<FileMetadata> f = fileMetadataRepositoryImpl.findByUploaderEmail(user);
+        List<FileMetadata> f = fileMetadataRepositoryImpl.findByUploaderEmail(user.getEmail());
 
         return f;
     }
