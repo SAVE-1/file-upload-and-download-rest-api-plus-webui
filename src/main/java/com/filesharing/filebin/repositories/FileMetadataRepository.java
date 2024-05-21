@@ -12,6 +12,6 @@ public interface FileMetadataRepository {
     void writeHelloWorldToDatabase();
     String helloWorld();
     String echo(String str);
-    Optional<FileMetadata> upsert(FileMetadata newFile);
+    int upsert(String filename, String username, int filesize, String uploadDate);
     List<FileMetadata> findByUploaderEmail(String user);
 }

@@ -72,7 +72,7 @@ public class FileUploadController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User)authentication.getPrincipal();
 
-        fileMetadataRepositoryImpl.insertNewFile(file.getOriginalFilename(), user.getEmail(), (int)file.getSize(), LocalDateTime.now().toString());
+        fileMetadataRepositoryImpl.upsert(file.getOriginalFilename(), user.getEmail(), (int)file.getSize(), LocalDateTime.now().toString());
 
         return ResponseEntity.ok().build();
     }
