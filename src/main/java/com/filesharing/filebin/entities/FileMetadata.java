@@ -7,71 +7,47 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 
-@Table(name = "filedata", uniqueConstraints={@UniqueConstraint(columnNames = {"uploaderEmail", "fileName"})})
+@Table(name = "filedata", uniqueConstraints = {@UniqueConstraint(columnNames = {"uploaderEmail", "fileName"})})
 @Entity
 public class FileMetadata {
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(nullable = false)
-        @JsonIgnore
-        private Integer id;
+    @EmbeddedId
+    private FileMetadataCompositeKey uploaderEmailPlusFileName;
 
-        @Column(nullable = false)
-        private String uploaderEmail;
+    @CreationTimestamp
+    @Column(nullable = false, name = "upload_date")
+    private Date uploadDate;
+    @Column(nullable = false, name = "file_size")
+    private Integer fileSize;
 
-        @Column(nullable = false, name="file_name", length = MyConstants.FILENAME_MAX_LENGTH)
-        private String fileName;
+    public Date getUploadDate() {
+        return uploadDate;
+    }
 
-        @CreationTimestamp
-        @Column(nullable = false, name="upload_date")
-        private Date uploadDate;
-        @Column(nullable = true, name="file_size")
-        private Integer fileSize;
+    public void setUploadDate(Date uploadDate) {
+        this.uploadDate = uploadDate;
+    }
 
-        public Integer getId() {
-                return id;
-        }
+    public Integer getFileSize() {
+        return fileSize;
+    }
 
-        public void setId(Integer id) {
-                this.id = id;
-        }
+    public void setFileSize(Integer fileSize) {
+        this.fileSize = fileSize;
+    }
 
-        public String getFileName() {
-                return fileName;
-        }
+    @Override
+    public String toString() {
+        return String.format("File={uploaderEmail={0}, fileName='{1}', uploadDate={2}, fileSize={3}}",
+                this.uploaderEmailPlusFileName.getUploaderEmail(), this.uploaderEmailPlusFileName.getFileName(), this.uploadDate, this.fileSize);
+    }
 
-        public void setFileName(String fileName) {
-                this.fileName = fileName;
-        }
+    public void setUploaderEmailPlusFileName(FileMetadataCompositeKey uploaderEmailPlusFileName) {
+        this.uploaderEmailPlusFileName = uploaderEmailPlusFileName;
+    }
 
-        public Date getUploadDate() {
-                return uploadDate;
-        }
-
-        public void setUploadDate(Date uploadDate) {
-                this.uploadDate = uploadDate;
-        }
-
-        public Integer getFileSize() {
-                return fileSize;
-        }
-
-        public void setFileSize(Integer fileSize) {
-                this.fileSize = fileSize;
-        }
-
-        @Override
-        public String toString() {
-                return String.format("File={id={0}, fileName='{1}', uploadDate={2}, fileSize={3}}",
-                        this.id, this.fileName, this.uploadDate, this.fileSize);
-        }
+    public FileMetadataCompositeKey getUploaderEmailPlusFileName() {
+        return uploaderEmailPlusFileName;
+    }
 
 
-        public String getUploaderEmail() {
-                return uploaderEmail;
-        }
-
-        public void setUploaderEmail(String uploaderEmail) {
-                this.uploaderEmail = uploaderEmail;
-        }
 }
