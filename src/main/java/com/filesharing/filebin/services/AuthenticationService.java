@@ -3,7 +3,7 @@ package com.filesharing.filebin.services;
 import com.filesharing.filebin.dtos.LoginUserDto;
 import com.filesharing.filebin.dtos.RegisterUserDto;
 import com.filesharing.filebin.entities.User;
-import com.filesharing.filebin.repositories.UserRepository;
+import com.filesharing.filebin.repositories.interfaces.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;

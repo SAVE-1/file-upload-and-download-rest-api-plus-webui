@@ -1,11 +1,11 @@
 package com.filesharing.filebin.controller;
 
-import com.filesharing.filebin.constants.MyConstants;
+import com.filesharing.filebin.config.constants.MyConstants;
 import com.filesharing.filebin.entities.FileMetadata;
 import com.filesharing.filebin.entities.User;
 import com.filesharing.filebin.repositories.FileMetadataRepositoryImpl;
-import com.filesharing.filebin.file.filestorage.FileStorageServiceImpl;
-import com.filesharing.filebin.file.filestorage.FileonDisk;
+import com.filesharing.filebin.repositories.FileStorageRepositoryImpl;
+import com.filesharing.filebin.repositories.filestorage.FileonDisk;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -28,11 +28,11 @@ import java.util.List;
 public class FileUploadController {
 
     private final FileMetadataRepositoryImpl fileMetadataRepositoryImpl;
-    private final FileStorageServiceImpl fileStorageServiceImpl;
+    private final FileStorageRepositoryImpl fileStorageServiceImpl;
 
     private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
-    public FileUploadController(FileMetadataRepositoryImpl fileMetadataRepositoryImpl, FileStorageServiceImpl fileStorageServiceImpl) {
+    public FileUploadController(FileMetadataRepositoryImpl fileMetadataRepositoryImpl, FileStorageRepositoryImpl fileStorageServiceImpl) {
         this.fileMetadataRepositoryImpl = fileMetadataRepositoryImpl;
         this.fileStorageServiceImpl = fileStorageServiceImpl;
     }

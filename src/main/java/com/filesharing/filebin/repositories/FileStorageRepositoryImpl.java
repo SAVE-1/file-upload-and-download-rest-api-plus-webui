@@ -1,6 +1,10 @@
-package com.filesharing.filebin.file.filestorage;
+package com.filesharing.filebin.repositories;
 
 import com.filesharing.filebin.controller.FileUploadController;
+import com.filesharing.filebin.repositories.filestorage.FileonDisk;
+import com.filesharing.filebin.repositories.filestorage.StorageException;
+import com.filesharing.filebin.repositories.filestorage.StorageFileNotFoundException;
+import com.filesharing.filebin.repositories.interfaces.FileStorageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,13 +22,13 @@ import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 
 @Service
-public class FileStorageServiceImpl implements FileStorageService {
+public class FileStorageRepositoryImpl implements FileStorageRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
     public Path storagePath;
 
-    public FileStorageServiceImpl(@Value("${filebin.storage.local.path}") String path) {
+    public FileStorageRepositoryImpl(@Value("${filebin.storage.local.path}") String path) {
         this.storagePath = Paths.get(path);
     }
 

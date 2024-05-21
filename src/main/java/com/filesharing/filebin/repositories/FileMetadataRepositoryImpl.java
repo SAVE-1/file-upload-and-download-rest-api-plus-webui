@@ -1,12 +1,11 @@
 package com.filesharing.filebin.repositories;
 
 import com.filesharing.filebin.entities.FileMetadata;
+import com.filesharing.filebin.repositories.interfaces.FileMetadataRepository;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -48,6 +47,15 @@ public class FileMetadataRepositoryImpl implements FileMetadataRepository {
     public int insertNewFile(String filename, String username, int filesize, String uploadDate) {
         int updated = jdbcClient.sql("INSERT INTO filedata(file_name, file_size, upload_date, uploader_email) values(?, ?, ?, ?)")
                 .params(filename, filesize, uploadDate, username)
+                .update();
+
+        return updated;
+    }
+
+    public int delete(String filename, String username) {
+        int updated = jdbcClient.sql("DELETE FROM filedata WHERE uploader_email = :email  AND file_name = :file;")
+                .param("email", username)
+                .param("file", filename)
                 .update();
 
         return updated;

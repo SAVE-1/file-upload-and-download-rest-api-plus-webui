@@ -1,7 +1,5 @@
 package com.filesharing.filebin.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.filesharing.filebin.constants.MyConstants;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 

@@ -1,4 +1,4 @@
-package com.filesharing.filebin.file.filestorage;
+package com.filesharing.filebin.repositories.filestorage;
 
 public class StorageFileNotFoundException extends StorageException {
 

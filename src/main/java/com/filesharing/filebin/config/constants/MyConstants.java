@@ -1,4 +1,4 @@
-package com.filesharing.filebin.constants;
+package com.filesharing.filebin.config.constants;
 
 import com.filesharing.filebin.requests.RequestStates;
 import com.google.gson.Gson;

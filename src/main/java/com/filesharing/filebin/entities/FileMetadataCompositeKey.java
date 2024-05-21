@@ -1,6 +1,6 @@
 package com.filesharing.filebin.entities;
 
-import com.filesharing.filebin.constants.MyConstants;
+import com.filesharing.filebin.config.constants.MyConstants;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
