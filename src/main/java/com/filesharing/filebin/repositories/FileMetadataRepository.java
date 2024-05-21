@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FileMetadataRepository {
-    void writeHelloWorldToDatabase();
-    String helloWorld();
-    String echo(String str);
     int upsert(String filename, String username, int filesize, String uploadDate);
     List<FileMetadata> findByUploaderEmail(String user);
 }

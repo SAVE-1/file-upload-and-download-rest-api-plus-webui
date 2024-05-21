@@ -18,30 +18,6 @@ public class FileMetadataRepositoryImpl implements FileMetadataRepository {
         this.jdbcClient = jdbcClient;
     }
 
-    public String helloWorld() {
-        return "Hello world";
-    }
-
-    public void writeHelloWorldToDatabase() {
-        var updated = jdbcClient.sql("INSERT INTO test(name, timestamp) values(?, ?)")
-                .params("HELLO WORLD from Method:writeHelloWorldToDatabase()", LocalDateTime.now())
-                .update();
-
-        Assert.state(updated == 1, "Failed to create run jee");
-    }
-
-    public String echo(String str) {
-        var updated = jdbcClient.sql("INSERT INTO test(name, timestamp) values(?, ?)")
-                .params(str, LocalDateTime.now())
-                .update();
-
-        if (updated > 0) {
-            return str;
-        }
-
-        return "";
-    }
-
     @Transactional
     public int upsert(String filename, String username, int filesize, String uploadDate) {
         String que = """

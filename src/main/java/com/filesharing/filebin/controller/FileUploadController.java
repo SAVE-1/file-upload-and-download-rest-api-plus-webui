@@ -37,21 +37,6 @@ public class FileUploadController {
         this.fileStorageServiceImpl = fileStorageServiceImpl;
     }
 
-    @GetMapping("helloworld")
-    String helloWorld() {
-        return fileMetadataRepositoryImpl.helloWorld();
-    }
-
-    @GetMapping("/write-hello-world")
-    void writeHelloWorld() {
-        fileMetadataRepositoryImpl.writeHelloWorldToDatabase();
-    }
-
-    @GetMapping("/echo")
-    String writeHelloWorld(@RequestParam("echo") String echo) {
-        return fileMetadataRepositoryImpl.echo(echo);
-    }
-
     // for uploading the SINGLE file to the database
     @PostMapping(
             path = "/upload",
@@ -88,11 +73,6 @@ public class FileUploadController {
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file);
-    }
-
-    @GetMapping(path = "/test")
-    public String test() throws Exception {
-        return "TEST";
     }
 
     @GetMapping(path = "/myfiles")
