@@ -1,6 +1,7 @@
 package com.filesharing.filebin.repositories;
 
 import com.filesharing.filebin.entities.FileMetadata;
+import com.filesharing.filebin.entities.FileMetadataRowMapper;
 import com.filesharing.filebin.repositories.interfaces.FileMetadataRepository;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -38,8 +39,8 @@ public class FileMetadataRepositoryImpl implements FileMetadataRepository {
     }
 
     public List<FileMetadata> findByUploaderEmail(String user) {
-        List<FileMetadata> results = jdbcClient.sql("SELECT file_name, file_size, uploader_email FROM filedata WHERE uploader_email = ?")
-                .params(user).query(FileMetadata.class).list();
+        List<FileMetadata> results = jdbcClient.sql("SELECT file_name, upload_date, file_size, uploader_email FROM filedata WHERE uploader_email = ?")
+                .params(user).query(FileMetadataRowMapper.getInstance()).list();
 
         return results;
     }

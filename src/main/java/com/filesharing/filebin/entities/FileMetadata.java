@@ -5,17 +5,23 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 
-@Table(name = "filedata", uniqueConstraints = {@UniqueConstraint(columnNames = {"uploaderEmail", "fileName"})})
+@Table(name = "filedata")
 @Entity
 public class FileMetadata {
     @EmbeddedId
-    private FileMetadataCompositeKey uploaderEmailPlusFileName;
+    private FileMetadataCompositeKey uploaderEmailAndFileName;
 
     @CreationTimestamp
     @Column(nullable = false, name = "upload_date")
     private Date uploadDate;
     @Column(nullable = false, name = "file_size")
     private Integer fileSize;
+
+    public FileMetadata(String email, String filename, Date uploadDate, Integer filesize) {
+        this.uploaderEmailAndFileName = new FileMetadataCompositeKey(email, filename);
+        this.uploadDate = uploadDate;
+        this.fileSize = filesize;
+    }
 
     public Date getUploadDate() {
         return uploadDate;
@@ -36,16 +42,14 @@ public class FileMetadata {
     @Override
     public String toString() {
         return String.format("File={uploaderEmail={0}, fileName='{1}', uploadDate={2}, fileSize={3}}",
-                this.uploaderEmailPlusFileName.getUploaderEmail(), this.uploaderEmailPlusFileName.getFileName(), this.uploadDate, this.fileSize);
+                this.uploaderEmailAndFileName.getUploaderEmail(), this.uploaderEmailAndFileName.getFileName(), this.uploadDate, this.fileSize);
     }
 
-    public void setUploaderEmailPlusFileName(FileMetadataCompositeKey uploaderEmailPlusFileName) {
-        this.uploaderEmailPlusFileName = uploaderEmailPlusFileName;
+    public void setUploaderEmailAndFileName(FileMetadataCompositeKey uploaderEmailAndFileName) {
+        this.uploaderEmailAndFileName = uploaderEmailAndFileName;
     }
 
-    public FileMetadataCompositeKey getUploaderEmailPlusFileName() {
-        return uploaderEmailPlusFileName;
+    public FileMetadataCompositeKey getUploaderEmailAndFileName() {
+        return uploaderEmailAndFileName;
     }
-
-
 }
