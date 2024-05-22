@@ -6,6 +6,7 @@ import com.filesharing.filebin.entities.User;
 import com.filesharing.filebin.repositories.FileMetadataRepositoryImpl;
 import com.filesharing.filebin.repositories.FileStorageRepositoryImpl;
 import com.filesharing.filebin.repositories.filestorage.FileonDisk;
+import com.filesharing.filebin.responses.FileMetadataResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -76,11 +77,11 @@ public class FileUploadController {
     }
 
     @GetMapping(path = "/myfiles")
-    public List<FileMetadata> getUserFileList() throws Exception {
+    public List<FileMetadataResponse> getUserFileList() throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
 
-        List<FileMetadata> f = fileMetadataRepositoryImpl.findByUploaderEmail(user.getEmail());
+        List<FileMetadataResponse> f = fileMetadataRepositoryImpl.findByUploaderEmail(user.getEmail());
 
         return f;
     }

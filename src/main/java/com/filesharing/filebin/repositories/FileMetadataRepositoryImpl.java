@@ -3,6 +3,7 @@ package com.filesharing.filebin.repositories;
 import com.filesharing.filebin.entities.FileMetadata;
 import com.filesharing.filebin.entities.FileMetadataRowMapper;
 import com.filesharing.filebin.repositories.interfaces.FileMetadataRepository;
+import com.filesharing.filebin.responses.FileMetadataResponse;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,8 +39,8 @@ public class FileMetadataRepositoryImpl implements FileMetadataRepository {
         return updated;
     }
 
-    public List<FileMetadata> findByUploaderEmail(String user) {
-        List<FileMetadata> results = jdbcClient.sql("SELECT file_name, upload_date, file_size, uploader_email FROM filedata WHERE uploader_email = ?")
+    public List<FileMetadataResponse> findByUploaderEmail(String user) {
+        List<FileMetadataResponse> results = jdbcClient.sql("SELECT file_name, upload_date, file_size, uploader_email FROM filedata WHERE uploader_email = ?")
                 .params(user).query(FileMetadataRowMapper.getInstance()).list();
 
         return results;

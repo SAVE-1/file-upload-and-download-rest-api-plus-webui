@@ -4,9 +4,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
+
+import com.filesharing.filebin.responses.FileMetadataResponse;
 import org.springframework.jdbc.core.RowMapper;
 
-public class FileMetadataRowMapper implements RowMapper<FileMetadata> {
+public class FileMetadataRowMapper implements RowMapper<FileMetadataResponse> {
 
     private FileMetadataRowMapper() {}
 
@@ -17,8 +19,8 @@ public class FileMetadataRowMapper implements RowMapper<FileMetadata> {
     }
 
     @Override
-    public FileMetadata mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return new FileMetadata(
+    public FileMetadataResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
+        return new FileMetadataResponse(
                 rs.getString("uploader_email"),
                 rs.getString("file_name"),
                 rs.getDate("upload_date"),
