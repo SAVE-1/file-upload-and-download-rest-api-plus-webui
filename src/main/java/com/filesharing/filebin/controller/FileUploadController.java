@@ -46,7 +46,7 @@ public class FileUploadController {
 
         Boolean doesExist = fileStorageServiceImpl.doesFileExist(file.getOriginalFilename());
 
-        if(doesExist && forceOverwrite == false) {
+        if (doesExist && forceOverwrite == false) {
             return new ResponseEntity<>(MyConstants.FILE_ALREADY_EXISTS, HttpStatus.CONFLICT);
         }
 
@@ -55,9 +55,9 @@ public class FileUploadController {
         fileStorageServiceImpl.uploadFileToDisk(fileonDisk);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User)authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
 
-        fileMetadataRepositoryImpl.upsert(file.getOriginalFilename(), user.getEmail(), (int)file.getSize(), LocalDateTime.now().toString());
+        fileMetadataRepositoryImpl.upsert(file.getOriginalFilename(), user.getEmail(), (int) file.getSize(), LocalDateTime.now().toString());
 
         return ResponseEntity.ok().build();
     }
@@ -78,11 +78,35 @@ public class FileUploadController {
     @GetMapping(path = "/myfiles")
     public List<FileMetadata> getUserFileList() throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User)authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
 
         List<FileMetadata> f = fileMetadataRepositoryImpl.findByUploaderEmail(user.getEmail());
 
         return f;
+    }
+
+    @DeleteMapping(path = "/download/{filename:.+}",
+            produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ResponseBody
+    public ResponseEntity<Resource> deleteFile(@PathVariable String filename) throws Exception {
+        Boolean doesExist = fileStorageServiceImpl.doesFileExist(filename);
+
+        if (doesExist)
+        {
+            Boolean successfullDel = fileStorageServiceImpl.deleteFile(filename);
+
+            if(successfullDel) {
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                User user = (User) authentication.getPrincipal();
+                int n = fileMetadataRepositoryImpl.delete(user.getEmail(), filename);
+
+                if(n > 0){
+                    return ResponseEntity.ok().build();
+                }
+            }
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
 }

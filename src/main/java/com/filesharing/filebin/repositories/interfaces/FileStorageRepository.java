@@ -16,4 +16,7 @@ public interface FileStorageRepository {
     Optional<String> uploadFileToDisk(FileonDisk file);
 
     Boolean doesFileExist(String fileName);
+
+    Boolean deleteFile(String filename);
+
 }

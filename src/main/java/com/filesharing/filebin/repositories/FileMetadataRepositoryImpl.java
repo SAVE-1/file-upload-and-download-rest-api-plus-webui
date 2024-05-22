@@ -52,7 +52,7 @@ public class FileMetadataRepositoryImpl implements FileMetadataRepository {
         return updated;
     }
 
-    public int delete(String filename, String username) {
+    public int delete(String username, String filename) {
         int updated = jdbcClient.sql("DELETE FROM filedata WHERE uploader_email = :email  AND file_name = :file;")
                 .param("email", username)
                 .param("file", filename)

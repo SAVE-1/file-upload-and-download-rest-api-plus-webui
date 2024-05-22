@@ -78,13 +78,11 @@ public class FileStorageRepositoryImpl implements FileStorageRepository {
             Resource resource = new UrlResource(file.toUri());
             if (resource.exists() || resource.isReadable()) {
                 return resource;
-            }
-            else {
+            } else {
                 throw new StorageFileNotFoundException(
                         "Could not read file: " + name);
             }
-        }
-        catch (MalformedURLException e) {
+        } catch (MalformedURLException e) {
             throw new StorageFileNotFoundException("Could not read file: " + name, e);
         }
     }
@@ -99,16 +97,23 @@ public class FileStorageRepositoryImpl implements FileStorageRepository {
             Resource resource = new UrlResource(file.toUri());
             if (resource.exists() || resource.isReadable()) {
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
-        }
-        catch (MalformedURLException e) {
+        } catch (MalformedURLException e) {
             throw new StorageFileNotFoundException("Could not read file: " + fileName, e);
         }
     }
 
-
-
+    public Boolean deleteFile(String filename) {
+        try {
+            Path file = load(filename);
+            Resource resource = new UrlResource(file.toUri());
+            return resource.getFile().delete();
+        } catch (MalformedURLException e) {
+            throw new StorageFileNotFoundException("Could not read file: " + filename, e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
