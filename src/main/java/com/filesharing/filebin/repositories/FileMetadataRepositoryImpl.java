@@ -39,7 +39,7 @@ public class FileMetadataRepositoryImpl implements FileMetadataRepository {
         return updated;
     }
 
-    public List<FileMetadataResponse> findByUploaderEmail(String user) {
+    public List<FileMetadataResponse> listUsersFiles(String user) {
         List<FileMetadataResponse> results = jdbcClient.sql("SELECT file_name, upload_date, file_size, uploader_email FROM filedata WHERE uploader_email = ?")
                 .params(user).query(FileMetadataRowMapper.getInstance()).list();
 

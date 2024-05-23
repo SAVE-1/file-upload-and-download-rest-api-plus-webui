@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface FileMetadataRepository {
     int upsert(String filename, String username, int filesize, String uploadDate);
-    List<FileMetadataResponse> findByUploaderEmail(String user);
+    List<FileMetadataResponse> listUsersFiles(String user);
     int delete(String filename, String username);
 }

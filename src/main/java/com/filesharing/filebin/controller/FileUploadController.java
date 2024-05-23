@@ -81,7 +81,7 @@ public class FileUploadController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
 
-        List<FileMetadataResponse> f = fileMetadataRepositoryImpl.findByUploaderEmail(user.getEmail());
+        List<FileMetadataResponse> f = fileMetadataRepositoryImpl.listUsersFiles(user.getEmail());
 
         return f;
     }
