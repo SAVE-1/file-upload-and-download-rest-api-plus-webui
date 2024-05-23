@@ -63,5 +63,14 @@ public class FileMetadataRepositoryImpl implements FileMetadataRepository {
         return updated;
     }
 
+    public FileMetadataResponse getFileInformation(String username, String filename) {
+        FileMetadataResponse results = jdbcClient.sql("SELECT file_name, upload_date, file_size, uploader_email FROM filedata WHERE uploader_email = :username AND file_name = :filename")
+                .param("username", username)
+                .param("filename", filename)
+                .query(FileMetadataRowMapper.getInstance()).single();
+
+        return results;
+    }
+
 
 }

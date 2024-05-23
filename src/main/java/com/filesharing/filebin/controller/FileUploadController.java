@@ -1,7 +1,6 @@
 package com.filesharing.filebin.controller;
 
 import com.filesharing.filebin.config.constants.MyConstants;
-import com.filesharing.filebin.entities.FileMetadata;
 import com.filesharing.filebin.entities.User;
 import com.filesharing.filebin.repositories.FileMetadataRepositoryImpl;
 import com.filesharing.filebin.repositories.FileStorageRepositoryImpl;
@@ -109,5 +108,21 @@ public class FileUploadController {
 
         return ResponseEntity.notFound().build();
     }
+
+    @GetMapping(path = "/getinfo/{filename:.+}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<FileMetadataResponse> getFileInfo(@PathVariable String filename) throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        FileMetadataResponse file = fileMetadataRepositoryImpl.getFileInformation(user.getEmail(), filename);
+
+        if (file == null)
+            return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok().body(file);
+    }
+
 
 }
