@@ -1,6 +1,6 @@
 package com.filesharing.filebin.repositories;
 
-import com.filesharing.filebin.entities.FileMetadataRowMapper;
+import com.filesharing.filebin.entities.FileMetadataResponseRowMapper;
 import com.filesharing.filebin.repositories.interfaces.FileMetadataRepository;
 import com.filesharing.filebin.responses.FileMetadataResponse;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -42,7 +42,7 @@ public class FileMetadataRepositoryImpl implements FileMetadataRepository {
 
     public List<FileMetadataResponse> listUsersFiles(String user) {
         List<FileMetadataResponse> results = jdbcClient.sql("SELECT file_name, upload_date, file_size, uploader_email FROM filedata WHERE uploader_email = ?")
-                .params(user).query(FileMetadataRowMapper.getInstance()).list();
+                .params(user).query(FileMetadataResponseRowMapper.getInstance()).list();
 
         return results;
     }
@@ -68,7 +68,7 @@ public class FileMetadataRepositoryImpl implements FileMetadataRepository {
         FileMetadataResponse results = jdbcClient.sql("SELECT file_name, upload_date, file_size, uploader_email FROM filedata WHERE uploader_email = :username AND file_name = :filename")
                 .param("username", username)
                 .param("filename", filename)
-                .query(FileMetadataRowMapper.getInstance()).single();
+                .query(FileMetadataResponseRowMapper.getInstance()).single();
         Optional<FileMetadataResponse> opt = Optional.of(results);
 
         return opt;

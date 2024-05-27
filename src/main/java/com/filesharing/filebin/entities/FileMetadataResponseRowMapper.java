@@ -6,13 +6,13 @@ import java.sql.SQLException;
 import com.filesharing.filebin.responses.FileMetadataResponse;
 import org.springframework.jdbc.core.RowMapper;
 
-public class FileMetadataRowMapper implements RowMapper<FileMetadataResponse> {
+public class FileMetadataResponseRowMapper implements RowMapper<FileMetadataResponse> {
 
-    private FileMetadataRowMapper() {}
+    private FileMetadataResponseRowMapper() {}
 
-    private static final FileMetadataRowMapper INSTANCE = new FileMetadataRowMapper();
+    private static final FileMetadataResponseRowMapper INSTANCE = new FileMetadataResponseRowMapper();
 
-    public static FileMetadataRowMapper getInstance() {
+    public static FileMetadataResponseRowMapper getInstance() {
         return INSTANCE;
     }
 
