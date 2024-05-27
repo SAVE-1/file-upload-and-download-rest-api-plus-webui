@@ -1,14 +1,12 @@
 package com.filesharing.filebin.responses;
 
-import java.util.Date;
-
 public class FileMetadataResponse {
     private String email;
     private String filename;
-    private Date uploaddate;
+    private String uploaddate;
     private int size;
 
-    public FileMetadataResponse(String email, String filename, Date uploaddate, int size) {
+    public FileMetadataResponse(String email, String filename, String uploaddate, int size) {
         this.email = email;
         this.filename = filename;
         this.uploaddate = uploaddate;
@@ -31,11 +29,11 @@ public class FileMetadataResponse {
         this.filename = filename;
     }
 
-    public Date getUploaddate() {
+    public String getUploaddate() {
         return uploaddate;
     }
 
-    public void setUploaddate(Date uploaddate) {
+    public void setUploaddate(String uploaddate) {
         this.uploaddate = uploaddate;
     }
 

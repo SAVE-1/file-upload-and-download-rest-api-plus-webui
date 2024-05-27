@@ -1,6 +1,5 @@
 package com.filesharing.filebin.repositories;
 
-import com.filesharing.filebin.entities.FileMetadata;
 import com.filesharing.filebin.entities.FileMetadataRowMapper;
 import com.filesharing.filebin.repositories.interfaces.FileMetadataRepository;
 import com.filesharing.filebin.responses.FileMetadataResponse;
@@ -8,7 +7,9 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class FileMetadataRepositoryImpl implements FileMetadataRepository {
@@ -20,7 +21,7 @@ public class FileMetadataRepositoryImpl implements FileMetadataRepository {
     }
 
     @Transactional
-    public int upsert(String filename, String username, int filesize, String uploadDate) {
+    public int upsert(String filename, String username, int filesize, LocalDateTime uploadDate) {
         String que = """
                 UPDATE filedata WITH (UPDLOCK, SERIALIZABLE) SET file_size = :file_size, upload_date = :upload_date WHERE uploader_email = :uploader_email and file_name = :file_name;
                 IF @@ROWCOUNT = 0
@@ -33,7 +34,7 @@ public class FileMetadataRepositoryImpl implements FileMetadataRepository {
                 .param("file_name", filename)
                 .param("uploader_email", username)
                 .param("file_size", filesize)
-                .param("upload_date", uploadDate)
+                .param("upload_date", uploadDate.toString())
                 .update();
 
         return updated;
@@ -63,13 +64,14 @@ public class FileMetadataRepositoryImpl implements FileMetadataRepository {
         return updated;
     }
 
-    public FileMetadataResponse getFileInformation(String username, String filename) {
+    public Optional<FileMetadataResponse> getFileInformation(String username, String filename) {
         FileMetadataResponse results = jdbcClient.sql("SELECT file_name, upload_date, file_size, uploader_email FROM filedata WHERE uploader_email = :username AND file_name = :filename")
                 .param("username", username)
                 .param("filename", filename)
                 .query(FileMetadataRowMapper.getInstance()).single();
+        Optional<FileMetadataResponse> opt = Optional.of(results);
 
-        return results;
+        return opt;
     }
 
 

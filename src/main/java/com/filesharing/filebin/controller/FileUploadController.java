@@ -1,6 +1,5 @@
 package com.filesharing.filebin.controller;
 
-import com.filesharing.filebin.config.constants.MyConstants;
 import com.filesharing.filebin.entities.User;
 import com.filesharing.filebin.repositories.FileMetadataRepositoryImpl;
 import com.filesharing.filebin.repositories.FileStorageRepositoryImpl;
@@ -21,6 +20,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/file")
@@ -42,12 +42,12 @@ public class FileUploadController {
             path = "/upload",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file, Boolean forceOverwrite) throws Exception {
+    public ResponseEntity<FileMetadataResponse> uploadFile(@RequestParam("file") MultipartFile file, Boolean forceOverwrite) throws Exception {
 
         Boolean doesExist = fileStorageServiceImpl.doesFileExist(file.getOriginalFilename());
 
         if (doesExist && forceOverwrite == false) {
-            return new ResponseEntity<>(MyConstants.FILE_ALREADY_EXISTS, HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.FOUND);
         }
 
         FileonDisk fileonDisk = new FileonDisk(file, file.getName());
@@ -57,9 +57,11 @@ public class FileUploadController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
 
-        fileMetadataRepositoryImpl.upsert(file.getOriginalFilename(), user.getEmail(), (int) file.getSize(), LocalDateTime.now().toString());
+        LocalDateTime dateNow = LocalDateTime.now();
 
-        return ResponseEntity.ok().build();
+        fileMetadataRepositoryImpl.upsert(file.getOriginalFilename(), user.getEmail(), (int) file.getSize(), dateNow);
+        FileMetadataResponse t = new FileMetadataResponse(user.getEmail(), file.getOriginalFilename(), dateNow.withNano(0).toString(), (int)file.getSize());
+        return ResponseEntity.ok().body(t);
     }
 
     @GetMapping(path = "/download/{filename:.+}",
@@ -116,12 +118,12 @@ public class FileUploadController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
 
-        FileMetadataResponse file = fileMetadataRepositoryImpl.getFileInformation(user.getEmail(), filename);
+        Optional<FileMetadataResponse> file = fileMetadataRepositoryImpl.getFileInformation(user.getEmail(), filename);
 
-        if (file == null)
-            return ResponseEntity.notFound().build();
+        if (file.isPresent())
+            return ResponseEntity.ok().body(file.get());
 
-        return ResponseEntity.ok().body(file);
+        return ResponseEntity.notFound().build();
     }
 
 
