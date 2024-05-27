@@ -39,7 +39,7 @@ public class FileUploadController {
 
     // for uploading the SINGLE file to the database
     @PostMapping(
-            path = "/upload",
+            path = "/",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FileMetadataResponse> uploadFile(@RequestParam("file") MultipartFile file, Boolean forceOverwrite) throws Exception {
@@ -64,7 +64,7 @@ public class FileUploadController {
         return ResponseEntity.ok().body(t);
     }
 
-    @GetMapping(path = "/download/{filename:.+}",
+    @GetMapping(path = "/{filename:.+}",
             produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public ResponseEntity<Resource> downloadFile(@PathVariable String filename) throws Exception {
@@ -87,7 +87,7 @@ public class FileUploadController {
         return f;
     }
 
-    @DeleteMapping(path = "/download/{filename:.+}",
+    @DeleteMapping(path = "/{filename:.+}",
             produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public ResponseEntity<Resource> deleteFile(@PathVariable String filename) throws Exception {
@@ -111,7 +111,7 @@ public class FileUploadController {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping(path = "/getinfo/{filename:.+}",
+    @GetMapping(path = "/info/{filename:.+}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<FileMetadataResponse> getFileInfo(@PathVariable String filename) throws Exception {
