@@ -5,6 +5,7 @@ import com.filesharing.filebin.repositories.FileMetadataRepositoryImpl;
 import com.filesharing.filebin.repositories.FileStorageRepositoryImpl;
 import com.filesharing.filebin.repositories.filestorage.FileonDisk;
 import com.filesharing.filebin.responses.FileMetadataResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -37,7 +38,7 @@ public class FileUploadController {
         this.fileStorageServiceImpl = fileStorageServiceImpl;
     }
 
-    // for uploading the SINGLE file to the database
+    @Operation(summary = "Upserts a new file to disk and database")
     @PostMapping(
             path = "/",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -64,6 +65,7 @@ public class FileUploadController {
         return ResponseEntity.ok().body(t);
     }
 
+    @Operation(summary = "Gets file from disk")
     @GetMapping(path = "/{filename:.+}",
             produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
@@ -77,6 +79,7 @@ public class FileUploadController {
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     }
 
+    @Operation(summary = "Lists all user files and their info")
     @GetMapping(path = "/myfiles")
     public List<FileMetadataResponse> getUserFileList() throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -87,6 +90,7 @@ public class FileUploadController {
         return f;
     }
 
+    @Operation(summary = "Deletes file from disk and database")
     @DeleteMapping(path = "/{filename:.+}",
             produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
@@ -111,6 +115,7 @@ public class FileUploadController {
         return ResponseEntity.notFound().build();
     }
 
+    @Operation(summary = "Gets info on a single file")
     @GetMapping(path = "/info/{filename:.+}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
