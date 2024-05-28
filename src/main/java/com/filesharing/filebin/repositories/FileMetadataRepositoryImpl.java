@@ -1,6 +1,6 @@
 package com.filesharing.filebin.repositories;
 
-import com.filesharing.filebin.entities.FileMetadataResponseRowMapper;
+import com.filesharing.filebin.entities.mappers.FileMetadataResponseRowMapper;
 import com.filesharing.filebin.repositories.interfaces.FileMetadataRepository;
 import com.filesharing.filebin.responses.FileMetadataResponse;
 import org.springframework.jdbc.core.simple.JdbcClient;

@@ -1,4 +1,4 @@
-package com.filesharing.filebin.entities;
+package com.filesharing.filebin.entities.mappers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
