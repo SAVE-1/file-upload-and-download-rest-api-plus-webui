@@ -122,7 +122,7 @@ class FileStorageRepositoryImplTest {
         repository.deleteFile(newFileName);
 
         Boolean fileShouldNotExist = repository.doesFileExist(newFileName);
-        assertTrue(fileShouldNotExist == false, "File not found");
+        assertTrue(fileShouldNotExist == false, "File found");
     }
 
     @Test
@@ -149,20 +149,25 @@ class FileStorageRepositoryImplTest {
         }
 
         try {
-            byte[] uploadBytes = f.data().getBytes();
-            MessageDigest md5 = MessageDigest.getInstance("MD5");
-            byte[] digest = md5.digest(uploadBytes);
-            String hashString1 = new BigInteger(1, digest).toString(16);
-
-            byte[] ggg = Files.readAllBytes(r.getFile().toPath());
-            byte[] digest2 = md5.digest(uploadBytes);
-            String hashString2 = new BigInteger(1, digest2).toString(16);
+            String hashString1 = getMd5Hash(f.data().getBytes());
+            String hashString2 = getMd5Hash(Files.readAllBytes(r.getFile().toPath()));
 
             assertTrue(hashString1.equals(hashString2), "File not found");
         } catch (IOException i) {
             System.out.println(i.toString());
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
         }
     }
+
+    private String getMd5Hash(byte[] b)  {
+        try {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            byte[] digest = md5.digest(b);
+            return new BigInteger(1, digest).toString(16);
+        } catch (NoSuchAlgorithmException n) {
+            System.out.println(n);
+            return "";
+        }
+    }
+
+
 }
