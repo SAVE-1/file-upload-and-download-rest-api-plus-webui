@@ -1,22 +1,28 @@
 package com.filesharing.filebin.repositories;
 
 import com.filesharing.filebin.repositories.filestorage.FileonDisk;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class FileStorageRepositoryImplTest {
-    private final FileStorageRepositoryImpl repository = new FileStorageRepositoryImpl("upload-dir-TESTS");
+    private final FileStorageRepositoryImpl repository = new FileStorageRepositoryImpl(filePath);
 
-    String filePath = "upload-dir-TESTS";
+    private static final String filePath = "upload-dir-TESTS";
 
     @BeforeEach
     void setUp() throws MalformedURLException {
@@ -42,6 +48,15 @@ class FileStorageRepositoryImplTest {
 
         repository.uploadFileToDisk(f1);
         repository.uploadFileToDisk(f2);
+    }
+
+    @AfterEach
+    void tearDown() {
+        try {
+            FileUtils.cleanDirectory(new File(this.filePath));
+        } catch (IOException io) {
+            System.out.println("No such folder!!");
+        }
     }
 
     private void writeToFile(String fileName, String text) {
@@ -75,4 +90,79 @@ class FileStorageRepositoryImplTest {
         assertTrue(file2Exists == true, "File 2. not found");
     }
 
+    @Test
+    void upsertFile() {
+        String originalFileName = "file2.txt";
+        String newFileName = "upsertFileTest.txt";
+
+        MultipartFile mult = getMultiPartFile(newFileName, originalFileName);
+
+        FileonDisk f = new FileonDisk(mult, newFileName);
+
+        repository.uploadFileToDisk(f);
+
+        Boolean file2Exists = repository.doesFileExist(newFileName);
+        assertTrue(file2Exists == true, "File not found");
+    }
+
+    @Test
+    void deleteFile() {
+        String originalFileName = "file2.txt";
+        String newFileName = "deleteFile.txt";
+
+        MultipartFile mult = getMultiPartFile(newFileName, originalFileName);
+
+        FileonDisk f = new FileonDisk(mult, newFileName);
+
+        repository.uploadFileToDisk(f);
+
+        Boolean fileExists = repository.doesFileExist(newFileName);
+        assertTrue(fileExists == true, "File not found");
+
+        repository.deleteFile(newFileName);
+
+        Boolean fileShouldNotExist = repository.doesFileExist(newFileName);
+        assertTrue(fileShouldNotExist == false, "File not found");
+    }
+
+    @Test
+    void getFile() throws IOException {
+        String originalFileName = "file2.txt";
+        String newFileName = "deleteFile.txt";
+
+        MultipartFile mult = getMultiPartFile(newFileName, originalFileName);
+
+        FileonDisk f = new FileonDisk(mult, newFileName);
+
+        repository.uploadFileToDisk(f);
+
+        Boolean fileExists = repository.doesFileExist(newFileName);
+        assertTrue(fileExists == true, "File not found");
+
+        Resource r = repository.getUploadedFile(newFileName);
+
+        Boolean fileShouldNotExist = repository.doesFileExist(newFileName);
+
+        if(fileShouldNotExist == false) {
+            System.out.println("File does not exist!");
+            return;
+        }
+
+        try {
+            byte[] uploadBytes = f.data().getBytes();
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            byte[] digest = md5.digest(uploadBytes);
+            String hashString1 = new BigInteger(1, digest).toString(16);
+
+            byte[] ggg = Files.readAllBytes(r.getFile().toPath());
+            byte[] digest2 = md5.digest(uploadBytes);
+            String hashString2 = new BigInteger(1, digest2).toString(16);
+
+            assertTrue(hashString1.equals(hashString2), "File not found");
+        } catch (IOException i) {
+            System.out.println(i.toString());
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
