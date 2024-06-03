@@ -152,7 +152,7 @@ class FileStorageRepositoryImplTest {
             String hashString1 = getMd5Hash(f.data().getBytes());
             String hashString2 = getMd5Hash(Files.readAllBytes(r.getFile().toPath()));
 
-            assertTrue(hashString1.equals(hashString2), "File not found");
+            assertTrue(hashString1.equals(hashString2), "Files are not equal");
         } catch (IOException i) {
             System.out.println(i.toString());
         }
