@@ -36,3 +36,4 @@ build/
 .vscode/
 /upload-dir/*
 /Libraries/lib/libclamav.dll
+/upload-dir-TESTS/
