@@ -45,7 +45,7 @@ public class FileUploadController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FileMetadataResponse> uploadFile(@RequestParam("file") MultipartFile file, Boolean forceOverwrite) throws Exception {
 
-        Boolean doesExist = fileStorageServiceImpl.doesFileExist(file.getOriginalFilename());
+        Boolean doesExist = fileStorageServiceImpl.doesFileExist(file.getName());
 
         if (doesExist && forceOverwrite == false) {
             return new ResponseEntity<>(HttpStatus.FOUND);
