@@ -21,6 +21,14 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 
+
+/*
+
+    TODO: rewrite file write and read
+          because currently, if two users upload file with same name, they will be overwritten
+          current file hierarchy is flat, should be: [user name folder]/file
+
+*/
 @Service
 public class FileStorageRepositoryImpl implements FileStorageRepository {
 
