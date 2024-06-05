@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FileMetadataRepository {
-    int upsert(String filename, String username, int filesize, LocalDateTime uploadDate);
+    Optional<FileMetadataResponse> upsert(String filename, String username, int filesize, LocalDateTime uploadDate);
     List<FileMetadataResponse> listUsersFiles(String user);
-    int delete(String filename, String username);
+    Optional<FileMetadataResponse> delete(String filename, String username);
     Optional<FileMetadataResponse> getFileInformation(String username, String filename);
+    Optional<FileMetadataResponse> insertNewFile(String filename, String username, int filesize, String uploadDate);
 }

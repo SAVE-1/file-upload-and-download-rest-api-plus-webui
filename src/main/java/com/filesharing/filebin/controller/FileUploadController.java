@@ -104,9 +104,9 @@ public class FileUploadController {
             if(successfullDel) {
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
                 User user = (User) authentication.getPrincipal();
-                int n = fileMetadataRepositoryImpl.delete(user.getEmail(), filename);
+                Optional<FileMetadataResponse> response = fileMetadataRepositoryImpl.delete(user.getEmail(), filename);
 
-                if(n > 0){
+                if(response.isPresent()){
                     return ResponseEntity.ok().build();
                 }
             }

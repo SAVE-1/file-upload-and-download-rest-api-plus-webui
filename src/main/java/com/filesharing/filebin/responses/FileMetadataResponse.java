@@ -4,9 +4,9 @@ public class FileMetadataResponse {
     private String email;
     private String filename;
     private String uploaddate;
-    private int size;
+    private Integer size;
 
-    public FileMetadataResponse(String email, String filename, String uploaddate, int size) {
+    public FileMetadataResponse(String email, String filename, String uploaddate, Integer size) {
         this.email = email;
         this.filename = filename;
         this.uploaddate = uploaddate;
@@ -37,11 +37,11 @@ public class FileMetadataResponse {
         this.uploaddate = uploaddate;
     }
 
-    public int getSize() {
+    public Integer getSize() {
         return size;
     }
 
-    public void setSize(int size) {
+    public void setSize(Integer size) {
         this.size = size;
     }
 }
