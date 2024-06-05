@@ -45,13 +45,13 @@ public class FileUploadController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FileMetadataResponse> uploadFile(@RequestParam("file") MultipartFile file, Boolean forceOverwrite) throws Exception {
 
-        Boolean doesExist = fileStorageServiceImpl.doesFileExist(file.getName());
+        Boolean doesExist = fileStorageServiceImpl.doesFileExist(file.getOriginalFilename());
 
         if (doesExist && forceOverwrite == false) {
             return new ResponseEntity<>(HttpStatus.FOUND);
         }
 
-        FileonDisk fileonDisk = new FileonDisk(file, file.getName());
+        FileonDisk fileonDisk = new FileonDisk(file, file.getOriginalFilename());
 
         fileStorageServiceImpl.uploadFileToDisk(fileonDisk);
 

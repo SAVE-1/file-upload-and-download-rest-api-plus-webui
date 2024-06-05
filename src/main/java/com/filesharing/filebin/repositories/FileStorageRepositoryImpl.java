@@ -58,7 +58,7 @@ public class FileStorageRepositoryImpl implements FileStorageRepository {
             }
 
             Path destinationFile = this.storagePath.resolve(
-                            Paths.get(file.data().getName()))
+                            Paths.get(file.data().getOriginalFilename()))
                     .normalize().toAbsolutePath();
 
             if (!destinationFile.getParent().equals(this.storagePath.toAbsolutePath())) {
