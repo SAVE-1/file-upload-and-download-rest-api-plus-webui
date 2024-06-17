@@ -73,14 +73,22 @@ class FileMetadataRepositoryImplTest {
 
     @Test
     public void upsert() {
-        String fileName = "example.gif";
+        String filen = "example.gif";
         String email = "s@s.com";
         int file_size = 192933;
         String date  = "2024-06-05T10:59:27.1658530";
 
-        var t = jdbcClient.sql("SELECT * FROM filedata;").query(FileMetadataResponseRowMapper.getInstance()).list();
+//        var t = jdbcClient.sql("SELECT * FROM filedata;").query(FileMetadataResponseRowMapper.getInstance()).list();
+//        System.out.println(t);
 
-        System.out.println(t);
+        FileMetadataResponse f = new FileMetadataResponse(email,filen, date, file_size);
+
+        fileMetadataRepositoryImpl.upsert(f);
+
+        FileMetadataResponse t = jdbcClient.sql("SELECT file_name, uploader_email, file_size, upload_date FROM filedata where file_name = :file AND uploader_email = :email")
+                .param("file", filen)
+                .param("email", email)
+                .query(FileMetadataResponseRowMapper.getInstance()).single();
 
         assertTrue("a".equals("a"), "Metadata are not equal");
     }
