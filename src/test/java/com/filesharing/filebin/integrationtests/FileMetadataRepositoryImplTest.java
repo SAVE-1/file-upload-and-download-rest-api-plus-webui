@@ -1,14 +1,15 @@
 package com.filesharing.filebin.integrationtests;
 
+import com.filesharing.filebin.entities.mappers.FileMetadataResponseRowMapper;
 import com.filesharing.filebin.repositories.FileMetadataRepositoryImpl;
 import com.filesharing.filebin.responses.FileMetadataResponse;
-import org.junit.Rule;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
@@ -16,13 +17,9 @@ import org.testcontainers.containers.MSSQLServerContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
 
 // https://foojay.io/today/the-new-jdbcclient-introduced-in-spring-framework-6-1/
 // https://java.testcontainers.org/modules/databases/mssqlserver/
@@ -41,6 +38,9 @@ class FileMetadataRepositoryImplTest {
 
     @Autowired
     private FileMetadataRepositoryImpl fileMetadataRepositoryImpl;
+
+    @Autowired
+    private JdbcClient jdbcClient;
 
     private List<FileMetadataResponse> list;
     private final String username = "sam@smith.com";
@@ -62,20 +62,6 @@ class FileMetadataRepositoryImplTest {
         SQLSERVER_CONTAINER.stop();
     }
 
-    @BeforeEach
-    void setUp() {
-
-        list = Arrays.asList(
-                new FileMetadataResponse(username, "bouldering.json", LocalDateTime.now().toString(), 1),
-                new FileMetadataResponse(username, "wedding-image-1.jpeg", LocalDateTime.now().toString(), 2),
-                new FileMetadataResponse(username, "toyota-corolla-1987-field-guide.pdf", LocalDateTime.now().toString(), 3),
-                new FileMetadataResponse(username, "malware.exe", LocalDateTime.now().toString(), 4));
-
-        for (FileMetadataResponse f : list) {
-            fileMetadataRepositoryImpl.upsert(f);
-        }
-    }
-
     @AfterEach
     void tearDown() { }
 
@@ -87,20 +73,16 @@ class FileMetadataRepositoryImplTest {
 
     @Test
     public void upsert() {
-//        String filename = "bouldering-guide.pdf";
-//        int filesize = 3;
-//        LocalDateTime time = LocalDateTime.now();
-//
-//        Optional<FileMetadataResponse> r = Optional.of(new FileMetadataResponse(username, filename, time.toString(), filesize));
-//
-//        when(fileMetadataRepositoryImpl.upsert(filename, username, filesize, time)).thenReturn(r);
-//
-//        Optional<FileMetadataResponse> rr = Optional.of(new FileMetadataResponse(username, filename, time.toString(), filesize));
-//
-//        Optional<FileMetadataResponse> rrr = fileMetadataRepositoryImpl.upsert(filename, username, filesize, time);
+        String fileName = "example.gif";
+        String email = "s@s.com";
+        int file_size = 192933;
+        String date  = "2024-06-05T10:59:27.1658530";
+
+        var t = jdbcClient.sql("SELECT * FROM filedata;").query(FileMetadataResponseRowMapper.getInstance()).list();
+
+        System.out.println(t);
 
         assertTrue("a".equals("a"), "Metadata are not equal");
-
     }
 
     @Test
