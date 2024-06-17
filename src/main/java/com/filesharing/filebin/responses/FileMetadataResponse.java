@@ -44,4 +44,16 @@ public class FileMetadataResponse {
     public void setSize(Integer size) {
         this.size = size;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FileMetadataResponse that = (FileMetadataResponse) o;
+        return email.equals(that.email)
+                && filename.equals(that.filename)
+                && uploaddate.equals(that.uploaddate)
+                && size.equals(that.size);
+    }
+
 }
