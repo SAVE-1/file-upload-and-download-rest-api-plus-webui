@@ -3,7 +3,9 @@ package com.filesharing.filebin.repositories;
 import com.filesharing.filebin.entities.mappers.FileMetadataResponseRowMapper;
 import com.filesharing.filebin.repositories.interfaces.FileMetadataRepository;
 import com.filesharing.filebin.responses.FileMetadataResponse;
+import org.springframework.cglib.core.Local;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +45,10 @@ public class FileMetadataRepositoryImpl implements FileMetadataRepository {
         }
 
         return Optional.empty();
+    }
+
+    public Optional<FileMetadataResponse> upsert(FileMetadataResponse res) {
+        return this.upsert(res.getFilename(), res.getEmail(), res.getSize(), LocalDateTime.parse(res.getUploaddate()));
     }
 
     public List<FileMetadataResponse> listUsersFiles(String user) {
