@@ -1,18 +1,36 @@
---CREATE TABLE [dbo].[users](
---	[username] [nvarchar](50) NOT NULL primary key,
---	[password] [nvarchar](500) NOT NULL,
---	[enabled] [bit] NOT NULL
---) ON [PRIMARY]
---
---CREATE TABLE [dbo].[authorities](
---	[username] [nvarchar](50) NOT NULL primary key,
---	[authority] [nvarchar](50) NOT NULL,
---	FOREIGN KEY (username) references users(username)
---) ON [PRIMARY]
---
---create unique index ix_auth_username on authorities (username, authority);
---
---CREATE TABLE [dbo].[test](
---	[name] [nvarchar](50) NULL,
---	[timestamp] [datetime] NULL
---) ON [PRIMARY]
+
+CREATE DATABASE [Filebin];
+
+use [Filebin];
+
+
+CREATE TABLE [dbo].[users](
+	[id] [int] NOT NULL,
+	[created_at] [datetime2](6) NULL,
+	[email] [varchar](100) NOT NULL,
+	[full_name] [varchar](255) NOT NULL,
+	[password] [varchar](255) NOT NULL,
+	[updated_at] [datetime2](6) NULL,
+PRIMARY KEY CLUSTERED
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UK_6dotkott2kjsp8vw4d0m25fb7] UNIQUE NONCLUSTERED
+(
+	[email] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY];
+
+
+CREATE TABLE [dbo].[filedata](
+	[file_name] [varchar](255) NOT NULL,
+	[uploader_email] [varchar](255) NOT NULL,
+	[file_size] [int] NOT NULL,
+	[upload_date] [datetime2](6) NOT NULL,
+PRIMARY KEY CLUSTERED
+(
+	[file_name] ASC,
+	[uploader_email] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY];
+
