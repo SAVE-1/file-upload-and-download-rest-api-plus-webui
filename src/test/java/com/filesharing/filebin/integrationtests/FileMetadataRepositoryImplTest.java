@@ -17,7 +17,9 @@ import org.testcontainers.containers.MSSQLServerContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -72,34 +74,69 @@ class FileMetadataRepositoryImplTest {
     }
 
     @Test
+    public void listUsersFiles() {
+        String email = "s@s.com";
+        List<FileMetadataResponse> f = fileMetadataRepositoryImpl.listUsersFiles(email);
+
+        FileMetadataResponse res1 = new FileMetadataResponse("s@s.com", "1709899617664.gif",
+                "2024-06-05T13:32:06", 7142809);
+        FileMetadataResponse res2 = new FileMetadataResponse("s@s.com", "OIG3.1P9ahX7fRIAD0aes.jfif",
+                "2024-06-05T10:59:27", 192933);
+
+        List<FileMetadataResponse> ref = Arrays.asList(res1, res2);
+
+        assertTrue(ref.equals(f), "User file list is incorrect");
+    }
+
+    @Test
     public void upsert() {
-        String filen = "example.gif";
+        String file = "example.gif";
         String email = "s@s.com";
         int file_size = 192933;
-        String date  = "2024-06-05T10:59:27.1658530";
+        String date  = "2024-06-05T10:59:27";
 
-//        var t = jdbcClient.sql("SELECT * FROM filedata;").query(FileMetadataResponseRowMapper.getInstance()).list();
-//        System.out.println(t);
-
-        FileMetadataResponse f = new FileMetadataResponse(email,filen, date, file_size);
+        FileMetadataResponse f = new FileMetadataResponse(email,file, date, file_size);
 
         fileMetadataRepositoryImpl.upsert(f);
 
         FileMetadataResponse t = jdbcClient.sql("SELECT file_name, uploader_email, file_size, upload_date FROM filedata where file_name = :file AND uploader_email = :email")
-                .param("file", filen)
+                .param("file", file)
                 .param("email", email)
                 .query(FileMetadataResponseRowMapper.getInstance()).single();
 
-        assertTrue("a".equals("a"), "Metadata are not equal");
+        assertTrue(t.equals(f), "Metadata are not equal");
     }
 
     @Test
-    public void FileMetadataRepositoryImpl_listUsersFiles_ReturnsList_FileMetadataResponse() {
-        assertTrue("a".equals("a"), "Metadata are not equal");
-    }
+    public void delete() {
+        String file = "example3.gif";
+        String email = "s@s.com";
+        int file_size = 192933;
+        String date  = "2024-06-05T10:59:27";
 
-    @Test
-    public void FileMetadataRepositoryImpl_delete_ReturnsOptional_FileMetadataResponse() {
-        assertTrue("a".equals("a"), "Metadata are not equal");
+        jdbcClient.sql("INSERT INTO filedata (file_name, uploader_email, file_size, upload_date) VALUES (:file, :email, :size, :date)")
+                .param("file", file)
+                .param("email", email)
+                .param("size", file_size)
+                .param("date", date)
+                .update();
+
+        FileMetadataResponse firstSelect = jdbcClient.sql("SELECT file_name, uploader_email, file_size, upload_date FROM filedata where file_name = :file AND uploader_email = :email")
+                .param("file", file)
+                .param("email", email)
+                .query(FileMetadataResponseRowMapper.getInstance()).single();
+
+        FileMetadataResponse reference = new FileMetadataResponse(email, file, date, file_size);
+
+        assertTrue(reference.equals(firstSelect), "Entry does not exist in database");
+
+        fileMetadataRepositoryImpl.delete(email, file);
+
+        Optional<FileMetadataResponse> shouldNotFindFile = jdbcClient.sql("SELECT file_name, uploader_email, file_size, upload_date FROM filedata where file_name = :file AND uploader_email = :email")
+                .param("file", file)
+                .param("email", email)
+                .query(FileMetadataResponseRowMapper.getInstance()).optional();
+
+        assertTrue(shouldNotFindFile.isEmpty() == true, "Entry found in database, should not be found (should be deleted)");
     }
 }
