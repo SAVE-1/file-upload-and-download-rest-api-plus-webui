@@ -2,6 +2,7 @@ package com.filesharing.filebin.exceptions;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.access.AccessDeniedException;
@@ -18,6 +19,13 @@ public class GlobalExceptionHandler {
 
         // TODO send this stack trace to an observability tool
         exception.printStackTrace();
+
+        if (exception instanceof DataIntegrityViolationException) {
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(409), exception.getMessage());
+            errorDetail.setProperty("description", "Invalid");
+
+            return errorDetail;
+        }
 
         if (exception instanceof BadCredentialsException) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(401), exception.getMessage());
