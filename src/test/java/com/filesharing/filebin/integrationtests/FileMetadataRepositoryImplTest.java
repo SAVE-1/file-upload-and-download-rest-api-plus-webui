@@ -139,4 +139,28 @@ class FileMetadataRepositoryImplTest {
 
         assertTrue(shouldNotFindFile.isEmpty() == true, "Entry found in database, should not be found (should be deleted)");
     }
+
+    @Test
+    public void getFileInformation() {
+        String file = "exampleGetFileInformation.gif";
+        String email = "s@s.com";
+        int file_size = 192933;
+        String date  = "2024-06-05T10:59:27";
+
+        FileMetadataResponse reference = new FileMetadataResponse(email, file, date, file_size);
+
+        jdbcClient.sql("INSERT INTO filedata (file_name, uploader_email, file_size, upload_date) VALUES (:file, :email, :size, :date)")
+                .param("file", file)
+                .param("email", email)
+                .param("size", file_size)
+                .param("date", date)
+                .update();
+
+        Optional<FileMetadataResponse> info = fileMetadataRepositoryImpl.getFileInformation(email, file);
+
+        assertTrue(info.get().equals(reference), "Entry found in database, should not be found (should be deleted)");
+    }
+
+
+
 }
