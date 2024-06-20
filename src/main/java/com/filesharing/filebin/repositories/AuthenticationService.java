@@ -1,4 +1,4 @@
-package com.filesharing.filebin.services;
+package com.filesharing.filebin.repositories;
 
 import com.filesharing.filebin.dtos.LoginUserDto;
 import com.filesharing.filebin.dtos.RegisterUserDto;

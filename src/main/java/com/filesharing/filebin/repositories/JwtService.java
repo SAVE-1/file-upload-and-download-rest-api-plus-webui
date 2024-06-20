@@ -1,4 +1,4 @@
-package com.filesharing.filebin.services;
+package com.filesharing.filebin.repositories;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

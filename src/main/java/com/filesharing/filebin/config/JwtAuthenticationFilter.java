@@ -1,6 +1,6 @@
 package com.filesharing.filebin.config;
 
-import com.filesharing.filebin.services.JwtService;
+import com.filesharing.filebin.repositories.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
