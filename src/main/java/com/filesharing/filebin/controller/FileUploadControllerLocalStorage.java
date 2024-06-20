@@ -26,14 +26,14 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/file")
 @Tag(name = "File upload and download", description = "File upload and download API")
-public class FileUploadController {
+public class FileUploadControllerLocalStorage {
 
     private final FileMetadataRepositoryImpl fileMetadataRepositoryImpl;
     private final FileStorageRepositoryImpl fileStorageServiceImpl;
 
-    private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileUploadControllerLocalStorage.class);
 
-    public FileUploadController(FileMetadataRepositoryImpl fileMetadataRepositoryImpl, FileStorageRepositoryImpl fileStorageServiceImpl) {
+    public FileUploadControllerLocalStorage(FileMetadataRepositoryImpl fileMetadataRepositoryImpl, FileStorageRepositoryImpl fileStorageServiceImpl) {
         this.fileMetadataRepositoryImpl = fileMetadataRepositoryImpl;
         this.fileStorageServiceImpl = fileStorageServiceImpl;
     }
