@@ -46,6 +46,7 @@ public class SecurityConfiguration {
                             .requestMatchers("/api/file/upload").authenticated()
                             .requestMatchers("/auth/**").permitAll()
                             .requestMatchers("/api/file/**").permitAll()
+                            .requestMatchers("/blob/**").permitAll()
                             .anyRequest().authenticated();
                 })
                 .sessionManagement((sess) -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
