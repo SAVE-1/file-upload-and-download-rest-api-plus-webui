@@ -5,10 +5,12 @@ import com.azure.storage.blob.BlobClientBuilder;
 import com.filesharing.filebin.services.filestorage.FileonDisk;
 import com.filesharing.filebin.services.interfaces.AzureBlobStorageService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Optional;
 
 public class AzureBlobStorageServiceImpl implements AzureBlobStorageService {
@@ -20,21 +22,23 @@ public class AzureBlobStorageServiceImpl implements AzureBlobStorageService {
 
     @Override
     public Optional<Resource> getBlob(String name) {
-        return Optional.empty();
-//        BlobClient blobClient = new BlobClientBuilder()
-//                .endpoint("http://127.0.0.1:10000")
-//                .connectionString(connectionString)
-//                .containerName(baseContainer)
-//                .blobName(name)
-//                .buildClient();
-//
-//        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-//            blobClient.downloadStream(outputStream);
-//            return Optional.of(outputStream.);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return Optional.of(Resource);
-//        }
+        BlobClient blobClient = new BlobClientBuilder()
+                .endpoint("http://127.0.0.1:10000")
+                .connectionString(connectionString)
+                .containerName(baseContainer)
+                .blobName(name)
+                .buildClient();
+
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            blobClient.downloadStream(outputStream);
+
+            ByteArrayResource r = new ByteArrayResource(outputStream.toByteArray());
+
+            return Optional.of(r);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
     }
 
     @Override
