@@ -1,4 +1,4 @@
-package com.filesharing.filebin.repositories.filestorage;
+package com.filesharing.filebin.services.filestorage;
 
 import org.springframework.web.multipart.MultipartFile;
 

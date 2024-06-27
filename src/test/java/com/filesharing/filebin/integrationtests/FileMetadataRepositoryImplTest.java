@@ -1,7 +1,7 @@
 package com.filesharing.filebin.integrationtests;
 
 import com.filesharing.filebin.entities.mappers.FileMetadataResponseRowMapper;
-import com.filesharing.filebin.repositories.FileMetadataRepositoryImpl;
+import com.filesharing.filebin.services.FileMetadataServiceImpl;
 import com.filesharing.filebin.responses.FileMetadataResponse;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ class FileMetadataRepositoryImplTest {
             "mcr.microsoft.com/mssql/server:2022-latest").acceptLicense();
 
     @Autowired
-    private FileMetadataRepositoryImpl fileMetadataRepositoryImpl;
+    private FileMetadataServiceImpl fileMetadataRepositoryImpl;
 
     @Autowired
     private JdbcClient jdbcClient;

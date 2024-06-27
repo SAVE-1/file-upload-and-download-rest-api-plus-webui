@@ -1,11 +1,9 @@
-package com.filesharing.filebin.repositories;
+package com.filesharing.filebin.services;
 
 import com.filesharing.filebin.entities.mappers.FileMetadataResponseRowMapper;
-import com.filesharing.filebin.repositories.interfaces.FileMetadataRepository;
+import com.filesharing.filebin.services.interfaces.FileMetadataRepository;
 import com.filesharing.filebin.responses.FileMetadataResponse;
-import org.springframework.cglib.core.Local;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,11 +12,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class FileMetadataRepositoryImpl implements FileMetadataRepository {
+public class FileMetadataServiceImpl implements FileMetadataRepository {
 
     private final JdbcClient jdbcClient;
 
-    public FileMetadataRepositoryImpl(JdbcClient jdbcClient) {
+    public FileMetadataServiceImpl(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
     }
 

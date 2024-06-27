@@ -1,6 +1,6 @@
 package com.filesharing.filebin.controller;
 
-import com.filesharing.filebin.repositories.FileStorageRepositoryImpl;
+import com.filesharing.filebin.services.FileStorageServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/share/file")
 @Tag(name = "Share a file", description = "File upload and download API")
 public class ShareFilesController {
-    private final FileStorageRepositoryImpl fileStorageServiceImpl;
+    private final FileStorageServiceImpl fileStorageServiceImpl;
 
-    public ShareFilesController(FileStorageRepositoryImpl fileStorageServiceImpl) {
+    public ShareFilesController(FileStorageServiceImpl fileStorageServiceImpl) {
         this.fileStorageServiceImpl = fileStorageServiceImpl;
     }
 

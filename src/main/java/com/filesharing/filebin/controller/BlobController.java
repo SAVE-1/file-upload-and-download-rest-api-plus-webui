@@ -1,6 +1,7 @@
 package com.filesharing.filebin.controller;
 
 import com.azure.core.util.BinaryData;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import com.azure.storage.blob.*;
@@ -13,33 +14,37 @@ import java.io.IOException;
 @RequestMapping("blob")
 public class BlobController {
 
-//    @Value("azurite-blob://testcontainer/test.txt")
+    @Value("${spring.cloud.azure.storage.blob.connection-string}")
+    private String connectionString;
 
-//    @GetMapping("/readBlobFile")
-//    public String readBlobFile() throws IOException {
-//        BlobClient blobClient = new BlobClientBuilder()
-//                .endpoint("http://127.0.0.1:10000")
-//                .connectionString("SharedAccessSignature=sv=2023-01-03&ss=btqf&srt=sco&st=2024-06-26T06%3A29%3A10Z&se=2031-06-27T06%3A29%3A00Z&sp=rwdxlup&sig=lmLvS69ar0Y5gkEg%2BxBRGYQuR5jnQu378nBG4WPulZc%3D;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;FileEndpoint=http://devstoreaccount1.file.core.windows.net;QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;TableEndpoint=http://127.0.0.1:10002/devstoreaccount1;")
-//                .containerName("test1")
-//                .blobName("test1.txt")
-//                .buildClient();
-//
-//        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-//            blobClient.downloadStream(outputStream);
-//            return outputStream.toString();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return "";
-//        }
-//    }
+    @Value("${spring.cloud.azure.storage.blob.base-container}")
+    private String baseContainer;
+
+    @GetMapping("/readBlobFile")
+    public String readBlobFile(@RequestBody String name) throws IOException {
+        BlobClient blobClient = new BlobClientBuilder()
+                .endpoint("http://127.0.0.1:10000")
+                .connectionString(connectionString)
+                .containerName(baseContainer)
+                .blobName(name)
+                .buildClient();
+
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            blobClient.downloadStream(outputStream);
+            return outputStream.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
 
     @PostMapping("/writeBlobFile")
     public String writeBlobFile(@RequestBody String data) throws IOException {
 
         BlobClient blobClient = new BlobClientBuilder()
                 .endpoint("http://127.0.0.1:10000")
-                .connectionString("SharedAccessSignature=sv=2023-01-03&ss=btqf&srt=sco&st=2024-06-26T06%3A29%3A10Z&se=2031-06-27T06%3A29%3A00Z&sp=rwdxlup&sig=lmLvS69ar0Y5gkEg%2BxBRGYQuR5jnQu378nBG4WPulZc%3D;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;FileEndpoint=http://devstoreaccount1.file.core.windows.net;QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;TableEndpoint=http://127.0.0.1:10002/devstoreaccount1;")
-                .containerName("test1")
+                .connectionString(connectionString)
+                .containerName(baseContainer)
                 .blobName("test1.txt")
                 .buildClient();
 

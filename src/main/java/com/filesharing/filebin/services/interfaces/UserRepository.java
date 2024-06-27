@@ -1,4 +1,4 @@
-package com.filesharing.filebin.repositories.interfaces;
+package com.filesharing.filebin.services.interfaces;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

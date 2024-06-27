@@ -1,6 +1,6 @@
-package com.filesharing.filebin.repositories.interfaces;
+package com.filesharing.filebin.services.interfaces;
 
-import com.filesharing.filebin.repositories.filestorage.FileonDisk;
+import com.filesharing.filebin.services.filestorage.FileonDisk;
 import org.springframework.core.io.Resource;
 
 import java.util.Optional;

@@ -1,7 +1,7 @@
 package com.filesharing.filebin.unittests.repositories;
 
-import com.filesharing.filebin.repositories.FileStorageRepositoryImpl;
-import com.filesharing.filebin.repositories.filestorage.FileonDisk;
+import com.filesharing.filebin.services.FileStorageServiceImpl;
+import com.filesharing.filebin.services.filestorage.FileonDisk;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +21,7 @@ import java.security.NoSuchAlgorithmException;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FileStorageRepositoryImplTest {
-    private final FileStorageRepositoryImpl repository = new FileStorageRepositoryImpl(filePath);
+    private final FileStorageServiceImpl repository = new FileStorageServiceImpl(filePath);
 
     private static final String filePath = "upload-dir-TESTS";
 

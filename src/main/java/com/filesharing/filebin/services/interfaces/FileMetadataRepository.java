@@ -1,4 +1,4 @@
-package com.filesharing.filebin.repositories.interfaces;
+package com.filesharing.filebin.services.interfaces;
 
 import com.filesharing.filebin.responses.FileMetadataResponse;
 

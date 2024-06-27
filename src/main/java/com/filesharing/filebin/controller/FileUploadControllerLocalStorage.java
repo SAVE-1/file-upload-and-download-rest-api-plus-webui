@@ -1,9 +1,9 @@
 package com.filesharing.filebin.controller;
 
 import com.filesharing.filebin.entities.User;
-import com.filesharing.filebin.repositories.FileMetadataRepositoryImpl;
-import com.filesharing.filebin.repositories.FileStorageRepositoryImpl;
-import com.filesharing.filebin.repositories.filestorage.FileonDisk;
+import com.filesharing.filebin.services.FileMetadataServiceImpl;
+import com.filesharing.filebin.services.FileStorageServiceImpl;
+import com.filesharing.filebin.services.filestorage.FileonDisk;
 import com.filesharing.filebin.responses.FileMetadataResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
@@ -28,12 +28,12 @@ import java.util.Optional;
 @Tag(name = "File upload and download", description = "File upload and download API")
 public class FileUploadControllerLocalStorage {
 
-    private final FileMetadataRepositoryImpl fileMetadataRepositoryImpl;
-    private final FileStorageRepositoryImpl fileStorageServiceImpl;
+    private final FileMetadataServiceImpl fileMetadataRepositoryImpl;
+    private final FileStorageServiceImpl fileStorageServiceImpl;
 
     private static final Logger logger = LoggerFactory.getLogger(FileUploadControllerLocalStorage.class);
 
-    public FileUploadControllerLocalStorage(FileMetadataRepositoryImpl fileMetadataRepositoryImpl, FileStorageRepositoryImpl fileStorageServiceImpl) {
+    public FileUploadControllerLocalStorage(FileMetadataServiceImpl fileMetadataRepositoryImpl, FileStorageServiceImpl fileStorageServiceImpl) {
         this.fileMetadataRepositoryImpl = fileMetadataRepositoryImpl;
         this.fileStorageServiceImpl = fileStorageServiceImpl;
     }
