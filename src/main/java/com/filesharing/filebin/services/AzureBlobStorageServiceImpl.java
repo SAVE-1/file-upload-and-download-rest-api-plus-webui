@@ -1,8 +1,9 @@
 package com.filesharing.filebin.services;
 
+import com.azure.core.util.BinaryData;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobClientBuilder;
-import com.filesharing.filebin.services.filestorage.FileonDisk;
+import com.filesharing.filebin.responses.FileMetadataResponse;
 import com.filesharing.filebin.services.interfaces.AzureBlobStorageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Optional;
 
 @Service
@@ -21,6 +21,21 @@ public class AzureBlobStorageServiceImpl implements AzureBlobStorageService {
 
     @Value("${spring.cloud.azure.storage.blob.base-container}")
     private String baseContainer;
+
+    @Override
+    public void uploadBlob(String name, Resource file) {
+        BlobClient blobClient = new BlobClientBuilder()
+                .endpoint("http://127.0.0.1:10000")
+                .connectionString(connectionString)
+                .containerName(baseContainer)
+                .blobName(name)
+                .buildClient();
+        try {
+            blobClient.upload(BinaryData.fromBytes(file.getContentAsByteArray()), true);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public Optional<Resource> getBlob(String name) {
@@ -43,10 +58,6 @@ public class AzureBlobStorageServiceImpl implements AzureBlobStorageService {
         }
     }
 
-    @Override
-    public Optional<String> uploadBlob(FileonDisk file) {
-        return Optional.empty();
-    }
 
     @Override
     public Boolean doesBlobExist(String fileName) {
@@ -54,7 +65,7 @@ public class AzureBlobStorageServiceImpl implements AzureBlobStorageService {
     }
 
     @Override
-    public Boolean deleteBlob(String filename) {
+    public Optional<FileMetadataResponse> deleteBlob(String filename) {
         return null;
     }
 }
