@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 @Service
@@ -22,6 +23,13 @@ public class AzureBlobStorageServiceImpl implements AzureBlobStorageService {
 
     @Value("${spring.cloud.azure.storage.blob.base-container}")
     private String baseContainer;
+
+//    public AzureBlobStorageServiceImpl(
+//            @Value("${spring.cloud.azure.storage.blob.connection-string}") String connectionString,
+//            @Value("${spring.cloud.azure.storage.blob.base-container}") String baseContainer) {
+//        this.connectionString = connectionString;
+//        this.baseContainer = baseContainer;
+//    }
 
     @Override
     public void uploadBlob(String name, Resource file) {
