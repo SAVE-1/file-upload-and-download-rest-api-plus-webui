@@ -13,5 +13,5 @@ public interface AzureBlobStorageService {
 
     Boolean doesBlobExist(String fileName);
 
-    Optional<FileMetadataResponse> deleteBlob(String filename);
+    void deleteBlob(String filename);
 }

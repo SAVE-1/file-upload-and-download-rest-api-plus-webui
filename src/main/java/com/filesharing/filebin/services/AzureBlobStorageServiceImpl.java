@@ -31,7 +31,8 @@ public class AzureBlobStorageServiceImpl implements AzureBlobStorageService {
                 .blobName(name)
                 .buildClient();
         try {
-            blobClient.upload(BinaryData.fromBytes(file.getContentAsByteArray()), true);
+            BinaryData data = BinaryData.fromBytes(file.getContentAsByteArray());
+            blobClient.upload(data.toStream(), data.getLength(), true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -58,14 +59,27 @@ public class AzureBlobStorageServiceImpl implements AzureBlobStorageService {
         }
     }
 
-
     @Override
-    public Boolean doesBlobExist(String fileName) {
-        return null;
+    public Boolean doesBlobExist(String name) {
+        BlobClient blobClient = new BlobClientBuilder()
+                .endpoint("http://127.0.0.1:10000")
+                .connectionString(connectionString)
+                .containerName(baseContainer)
+                .blobName(name)
+                .buildClient();
+
+        return blobClient.exists();
     }
 
     @Override
-    public Optional<FileMetadataResponse> deleteBlob(String filename) {
-        return null;
+    public void deleteBlob(String name) {
+        BlobClient blobClient = new BlobClientBuilder()
+                .endpoint("http://127.0.0.1:10000")
+                .connectionString(connectionString)
+                .containerName(baseContainer)
+                .blobName(name)
+                .buildClient();
+
+        blobClient.delete();
     }
 }
