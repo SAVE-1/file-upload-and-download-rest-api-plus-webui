@@ -6,8 +6,14 @@
 1. MSSQL locally installed for local development
 2. Docker desktop (at least version 4.30.0 (149282), since it is the one I used)
 3. Some room for MSSQL image
-   - at the time of this documentation the testcontainers MSSQL installation size was 1.58GB (MSSQL-container) + 15.22MB (some testcontainer -container) = 1.595GB
-   - not sure about RAM recommendation, but at least 8GB _should_ be sufficient
+   - At the time of this documentation the testcontainers MSSQL installation size was 1.58GB (MSSQL-container) + 15.22MB (some testcontainer -container) = 1.595GB
+   - Not sure about RAM recommendation, but at least 8GB _should_ be sufficient
+4. Azurite
+   - In development Azurite is recommended due to: 
+     - Free development (local resources do not cost)
+     - Easier integration testing (fast startup times, and no reliance on internet + azure)
+     - Faster startup times (azure resources do not need to exist, in order to start development)
+     - Simple dev resource cleanup (doesn't really matter if something is deleted, or still exists)
 
 # Configuration steps
 1. Install  MSSQL locally
