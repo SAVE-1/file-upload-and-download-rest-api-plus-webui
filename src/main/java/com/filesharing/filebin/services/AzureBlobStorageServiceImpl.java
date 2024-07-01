@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,6 +33,22 @@ public class AzureBlobStorageServiceImpl implements AzureBlobStorageService {
                 .buildClient();
         try {
             BinaryData data = BinaryData.fromBytes(file.getContentAsByteArray());
+            blobClient.upload(data.toStream(), data.getLength(), true);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public void uploadBlob(String name, MultipartFile file) {
+        BlobClient blobClient = new BlobClientBuilder()
+                .endpoint("http://127.0.0.1:10000")
+                .connectionString(connectionString)
+                .containerName(baseContainer)
+                .blobName(name)
+                .buildClient();
+        try {
+            BinaryData data = BinaryData.fromBytes(file.getBytes());
             blobClient.upload(data.toStream(), data.getLength(), true);
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -1,6 +1,7 @@
 package com.filesharing.filebin.controller;
 
 import com.filesharing.filebin.entities.User;
+import com.filesharing.filebin.services.AzureBlobStorageServiceImpl;
 import com.filesharing.filebin.services.FileMetadataServiceImpl;
 import com.filesharing.filebin.services.FileStorageServiceImpl;
 import com.filesharing.filebin.services.filestorage.FileonDisk;
@@ -26,16 +27,18 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/file")
 @Tag(name = "File upload and download", description = "File upload and download API")
-public class FileUploadControllerLocalStorage {
+public class FileUploadController {
 
     private final FileMetadataServiceImpl fileMetadataRepositoryImpl;
-    private final FileStorageServiceImpl fileStorageServiceImpl;
+    private final AzureBlobStorageServiceImpl azureBlobStorageServiceImpl;
 
-    private static final Logger logger = LoggerFactory.getLogger(FileUploadControllerLocalStorage.class);
+//    private final FileStorageServiceImpl fileStorageServiceImpl;
 
-    public FileUploadControllerLocalStorage(FileMetadataServiceImpl fileMetadataRepositoryImpl, FileStorageServiceImpl fileStorageServiceImpl) {
+    private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
+
+    public FileUploadController(FileMetadataServiceImpl fileMetadataRepositoryImpl, AzureBlobStorageServiceImpl azureBlobStorageServiceImpl) {
         this.fileMetadataRepositoryImpl = fileMetadataRepositoryImpl;
-        this.fileStorageServiceImpl = fileStorageServiceImpl;
+        this.azureBlobStorageServiceImpl = azureBlobStorageServiceImpl;
     }
 
     @Operation(summary = "Upserts a new file to disk and database")
@@ -45,7 +48,7 @@ public class FileUploadControllerLocalStorage {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FileMetadataResponse> uploadFile(@RequestParam("file") MultipartFile file, Boolean forceOverwrite) throws Exception {
 
-        Boolean doesExist = fileStorageServiceImpl.doesFileExist(file.getOriginalFilename());
+        Boolean doesExist = azureBlobStorageServiceImpl.doesBlobExist(file.getOriginalFilename());
 
         if (doesExist && forceOverwrite == false) {
             return new ResponseEntity<>(HttpStatus.FOUND);
@@ -53,7 +56,7 @@ public class FileUploadControllerLocalStorage {
 
         FileonDisk fileonDisk = new FileonDisk(file, file.getOriginalFilename());
 
-        fileStorageServiceImpl.uploadFileToDisk(fileonDisk);
+        azureBlobStorageServiceImpl.uploadBlob(file.getOriginalFilename(), file);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
@@ -61,7 +64,7 @@ public class FileUploadControllerLocalStorage {
         LocalDateTime dateNow = LocalDateTime.now();
 
         fileMetadataRepositoryImpl.upsert(file.getOriginalFilename(), user.getEmail(), (int) file.getSize(), dateNow);
-        FileMetadataResponse t = new FileMetadataResponse(user.getEmail(), file.getOriginalFilename(), dateNow.withNano(0).toString(), (int)file.getSize());
+        FileMetadataResponse t = new FileMetadataResponse(user.getEmail(), file.getOriginalFilename(), dateNow.withNano(0).toString(), (int) file.getSize());
         return ResponseEntity.ok().body(t);
     }
 
@@ -70,13 +73,15 @@ public class FileUploadControllerLocalStorage {
             produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public ResponseEntity<Resource> downloadFile(@PathVariable String filename) throws Exception {
-        Resource file = fileStorageServiceImpl.getUploadedFile(filename);
+        Optional<Resource> file = azureBlobStorageServiceImpl.getBlob(filename);
 
-        if (file == null)
-            return ResponseEntity.notFound().build();
+        if (file.isPresent())
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"" + filename + "\"").body(file.get());
 
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+        return ResponseEntity.notFound().build();
+
+
     }
 
     @Operation(summary = "Lists all user files and their info")
@@ -95,20 +100,17 @@ public class FileUploadControllerLocalStorage {
             produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public ResponseEntity<Resource> deleteFile(@PathVariable String filename) throws Exception {
-        Boolean doesExist = fileStorageServiceImpl.doesFileExist(filename);
+        Boolean doesExist = azureBlobStorageServiceImpl.doesBlobExist(filename);
 
-        if (doesExist)
-        {
-            Boolean successfullDel = fileStorageServiceImpl.deleteFile(filename);
+        if (doesExist) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            User user = (User) authentication.getPrincipal();
 
-            if(successfullDel) {
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                User user = (User) authentication.getPrincipal();
-                Optional<FileMetadataResponse> response = fileMetadataRepositoryImpl.delete(user.getEmail(), filename);
+            Optional<FileMetadataResponse> f = fileMetadataRepositoryImpl.delete(user.getEmail(), filename);
 
-                if(response.isPresent()){
-                    return ResponseEntity.ok().build();
-                }
+            if (f.isPresent()) {
+                azureBlobStorageServiceImpl.deleteBlob(filename);
+                return ResponseEntity.ok().build();
             }
         }
 

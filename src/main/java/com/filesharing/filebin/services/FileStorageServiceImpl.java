@@ -1,6 +1,6 @@
 package com.filesharing.filebin.services;
 
-import com.filesharing.filebin.controller.FileUploadControllerLocalStorage;
+import com.filesharing.filebin.controller.FileUploadController;
 import com.filesharing.filebin.services.filestorage.FileonDisk;
 import com.filesharing.filebin.services.filestorage.StorageException;
 import com.filesharing.filebin.services.filestorage.StorageFileNotFoundException;
@@ -32,7 +32,7 @@ import java.util.Optional;
 @Service
 public class FileStorageServiceImpl implements FileStorageRepository {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileUploadControllerLocalStorage.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
     public Path storagePath;
 
