@@ -1,4 +1,4 @@
-package com.filesharing.filebin.unittests.repositories;
+package com.filesharing.filebin.integrationtests;
 
 import com.filesharing.filebin.services.FileStorageServiceImpl;
 import com.filesharing.filebin.services.filestorage.FileonDisk;

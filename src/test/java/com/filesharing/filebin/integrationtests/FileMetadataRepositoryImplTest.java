@@ -160,7 +160,4 @@ class FileMetadataRepositoryImplTest {
 
         assertTrue(info.get().equals(reference), "Entry found in database, should not be found (should be deleted)");
     }
-
-
-
 }
