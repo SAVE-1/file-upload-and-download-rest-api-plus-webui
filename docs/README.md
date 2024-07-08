@@ -21,9 +21,12 @@
 3. Create the src/main/resources/application.properties -file (there is an example for settings)
 
 # Usefull commands
-````
 
+## Start azurite
+````
 azurite -s -l j:\azurite -d j:\azurite\debug.log
-
 ````
+
+# Documentation
+- https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/storage/azure-storage-blob/README.md
 

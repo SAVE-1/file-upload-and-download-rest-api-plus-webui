@@ -16,6 +16,9 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+// azurite -s -l j:\azurite -d j:\azurite\debug.log
+// https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/storage/azure-storage-blob/README.md
+
 @Service
 public class AzureBlobStorageServiceImpl implements AzureBlobStorageService {
     @Value("${spring.cloud.azure.storage.blob.connection-string}")
@@ -46,7 +49,6 @@ public class AzureBlobStorageServiceImpl implements AzureBlobStorageService {
             throw new RuntimeException(e);
         }
     }
-
 
     public void uploadBlob(String name, MultipartFile file) {
         BlobClient blobClient = new BlobClientBuilder()

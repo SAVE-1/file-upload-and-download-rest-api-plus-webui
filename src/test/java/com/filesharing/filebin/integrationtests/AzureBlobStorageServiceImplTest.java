@@ -1,174 +1,168 @@
 package com.filesharing.filebin.integrationtests;
 
+import com.azure.core.util.BinaryData;
+import com.azure.storage.blob.*;
 import com.filesharing.filebin.services.AzureBlobStorageServiceImpl;
-import com.filesharing.filebin.services.filestorage.FileonDisk;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
-import java.math.BigInteger;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestPropertySource(properties = "spring.cloud.azure.storage.blob.base-container=test")
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@ExtendWith(SpringExtension.class)
+@TestPropertySource(properties = "spring.cloud.azure.storage.blob.base-container=integrationtests")
 class AzureBlobStorageServiceImplTest {
-    private final AzureBlobStorageServiceImpl repository = new AzureBlobStorageServiceImpl();
+    private final AzureBlobStorageServiceImpl repository;
+
+    @Value("${spring.cloud.azure.storage.blob.connection-string}")
+    private String connectionString;
+
+    @Value("${spring.cloud.azure.storage.blob.test.base-container}")
+    private String baseContainer;
+
+    @Value("${spring.cloud.azure.storage.blob.endpoint-url}")
+    private String endpointUrl;
+
+    @Value("${spring.cloud.azure.storage.blob.sas-token}")
+    private String sasToken;
 
     private static final String filePath = "upload-dir-TESTS";
 
+    @Autowired
+    public AzureBlobStorageServiceImplTest(AzureBlobStorageServiceImpl repository) {
+        this.repository = repository;
+    }
+
     @BeforeEach
     void setUp() throws MalformedURLException {
-        File theDir = new File(filePath);
-        if (!theDir.exists()) {
-            theDir.mkdirs();
-        }
+        BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
+                .endpoint(endpointUrl)
+                .connectionString(connectionString)
+                .buildClient();
 
-        String originalFileName1 = "file1.txt";
-        String originalFileName2 = "file2.txt";
+        blobServiceClient.createBlobContainerIfNotExists(baseContainer);
 
-        String newFileName1 = "filenew1.txt";
-        String newFileName2 = "filenew2.txt";
+        BlobContainerClient blobContainerClient = new BlobContainerClientBuilder()
+                .endpoint(endpointUrl)
+                .connectionString(connectionString)
+                .containerName(baseContainer)
+                .buildClient();
 
-        writeToFile(originalFileName1, "I AM FILE 1.");
-        writeToFile(originalFileName2, "I AM FILE 2.");
+        BlobClient blob = blobContainerClient.getBlobClient("filenew1.txt");
+        String dataSample = "samples 1.";
+        blob.upload(BinaryData.fromString(dataSample), true);
 
-        MultipartFile mult1 = getMultiPartFile(newFileName1, originalFileName1);
-        MultipartFile mult2 = getMultiPartFile(newFileName2, originalFileName2);
-
-        repository.uploadBlob(newFileName1, mult1);
-        repository.uploadBlob(newFileName2, mult2);
+        BlobClient blob2 = blobContainerClient.getBlobClient("filenew2.txt");
+        String dataSample2 = "samples 2.";
+        blob2.upload(BinaryData.fromString(dataSample2), true);
     }
 
     @AfterEach
     void tearDown() {
-        try {
-            FileUtils.cleanDirectory(new File(this.filePath));
-        } catch (IOException io) {
-            System.out.println("No such folder!!");
-        }
+
     }
 
-    private void writeToFile(String fileName, String text) {
-        try {
-            PrintWriter writer = new PrintWriter(this.filePath + "/" + fileName, "UTF-8");
-            writer.println(text);
-            writer.close();
-        } catch (FileNotFoundException | UnsupportedEncodingException e) {
-            System.out.println(e.toString());
-        }
-    }
-
-    private MultipartFile getMultiPartFile(String newFileName, String originalFileName) {
-        try {
-            String contentType = "text/plain";
-            byte[] content = Files.readAllBytes(Path.of(this.filePath + "/" + originalFileName));
-            return new MockMultipartFile(newFileName,
-                    originalFileName, contentType, content);
-        } catch (final IOException e) {
-            System.out.println(e.toString());
-            return null;
-        }
+    private MultipartFile getMultiPartFile(String newFileName, String fileContent) {
+        String contentType = "text/plain";
+        byte[] content = fileContent.getBytes();
+        return new MockMultipartFile(newFileName,
+                fileContent, contentType, content);
     }
 
     @Test
     void twoFilesShouldExist() {
-        Boolean file1Exists = repository.doesBlobExist("filenew1.txt");
+        String file1 = "twoFilesShouldExist1-integration-test.txt";
+        String file2 = "twoFilesShouldExist2-integration-test.txt";
+        createFile(file1, "File 1.");
+        createFile(file2, "File 1.");
+
+        Boolean file1Exists = repository.doesBlobExist(file1);
         assertTrue(file1Exists == true, "File 1. not found");
 
-        Boolean file2Exists = repository.doesBlobExist("filenew2.txt");
+        Boolean file2Exists = repository.doesBlobExist(file2);
         assertTrue(file2Exists == true, "File 2. not found");
     }
 
     @Test
-    void upsertFile() {
-        String originalFileName = "file2.txt";
-        String newFileName = "upsertFileTest.txt";
+    void uploadBlob() {
+        String fileName = "file2.txt";
+        String content = "lorem ipsum";
 
-        MultipartFile mult = getMultiPartFile(newFileName, originalFileName);
+        MultipartFile mult = getMultiPartFile(fileName, content);
 
-        FileonDisk f = new FileonDisk(mult, newFileName);
+        repository.uploadBlob(fileName, mult);
 
-        repository.uploadBlob(newFileName, mult);
-
-        Boolean file2Exists = repository.doesBlobExist(newFileName);
+        Boolean file2Exists = repository.doesBlobExist(fileName);
         assertTrue(file2Exists == true, "File not found");
     }
 
     @Test
     void deleteFile() {
-        String originalFileName = "file2.txt";
-        String newFileName = "deleteFile.txt";
+        String fileName = "deleteFile-integration-test.txt";
+        String content = "lorem ipsum";
 
-        MultipartFile mult = getMultiPartFile(newFileName, originalFileName);
+        MultipartFile mult = getMultiPartFile(fileName, content);
 
-        FileonDisk f = new FileonDisk(mult, newFileName);
+        repository.uploadBlob(fileName, mult);
 
-        repository.uploadBlob(newFileName, mult);
+        Boolean file2Exists = repository.doesBlobExist(fileName);
+        // file SHOULD exist
+        assertTrue(file2Exists == true, "File not found");
 
-        Boolean fileExists = repository.doesBlobExist(newFileName);
-        assertTrue(fileExists == true, "File not found");
+        repository.deleteBlob(fileName);
 
-        repository.deleteBlob(newFileName);
-
-        Boolean fileShouldNotExist = repository.doesBlobExist(newFileName);
+        Boolean fileShouldNotExist = repository.doesBlobExist(fileName);
+        // file SHOULD NOT exist
         assertTrue(fileShouldNotExist == false, "File found");
     }
 
     @Test
-    void getFile() throws IOException {
-        String originalFileName = "file2.txt";
-        String newFileName = "deleteFile.txt";
+    void getFile() {
+        String file1 = "twoFilesShouldExist1-integration-test.txt";
+        String content = "lorem ipsum content";
+        createFile(file1, content);
 
-        MultipartFile mult = getMultiPartFile(newFileName, originalFileName);
+        Optional<Resource> readBlob = repository.getBlob(file1);
 
-        FileonDisk f = new FileonDisk(mult, newFileName);
+        Boolean fileShouldNotExist = repository.doesBlobExist(file1);
 
-        repository.uploadBlob(newFileName, mult);
-
-        Boolean fileExists = repository.doesBlobExist(newFileName);
-        assertTrue(fileExists == true, "File not found");
-
-        Optional<Resource> r = repository.getBlob(newFileName);
-
-        Boolean fileShouldNotExist = repository.doesBlobExist(newFileName);
-
-        if(fileShouldNotExist == false) {
+        if (fileShouldNotExist == false) {
             System.out.println("File does not exist!");
             return;
         }
 
         try {
-            String hashString1 = getMd5Hash(f.data().getBytes());
-            String hashString2 = getMd5Hash(r.get().getContentAsByteArray());
-
-            assertTrue(hashString1.equals(hashString2), "Files are not equal");
-        } catch (IOException i) {
-            System.out.println(i.toString());
+            String s = new String(readBlob.get().getContentAsByteArray(), StandardCharsets.UTF_8);
+            assertTrue(s.equals(content), "Files are not equal");
+        } catch (java.io.IOException i) {
+            System.out.println(i);
         }
     }
 
-    private String getMd5Hash(byte[] b)  {
-        try {
-            MessageDigest md5 = MessageDigest.getInstance("MD5");
-            byte[] digest = md5.digest(b);
-            return new BigInteger(1, digest).toString(16);
-        } catch (NoSuchAlgorithmException n) {
-            System.out.println(n);
-            return "";
-        }
+    private void createFile(String name, String content) {
+        BlobContainerClient blobContainerClient = new BlobContainerClientBuilder()
+                .endpoint(endpointUrl)
+                .connectionString(connectionString)
+                .containerName(baseContainer)
+                .buildClient();
+
+        BlobClient blob = blobContainerClient.getBlobClient(name);
+        blob.upload(BinaryData.fromString(content), true);
     }
-
-
 }
